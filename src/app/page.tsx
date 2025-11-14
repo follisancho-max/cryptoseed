@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { AnalyzeSeedPhraseForRiskOutput } from "@/ai/flows/analyze-seed-phrase-for-risk";
+import type { WalletData } from "@/app/actions";
 import { Logo } from "@/components/icons";
 import { SeedPhraseForm } from "@/components/seed-phrase-form";
 import { AnalysisResult } from "@/components/analysis-result";
@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 
 export default function Home() {
-  const [analysisResult, setAnalysisResult] =
-    useState<AnalyzeSeedPhraseForRiskOutput | null>(null);
+  const [walletData, setWalletData] =
+    useState<WalletData | null>(null);
 
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
@@ -18,7 +18,7 @@ export default function Home() {
         <div className="flex items-center gap-3">
           <Logo className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold tracking-tight text-primary">
-            CryptoSeedGate
+            CryptoSeed Wallet
           </h1>
         </div>
         <Button variant="ghost" size="icon" asChild>
@@ -32,28 +32,27 @@ export default function Home() {
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-headline">
-              Seed Phrase Security Analysis
+              Universal Seed Phrase Wallet
             </h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-lg mx-auto">
-              Enter your seed phrase and select a network to get an AI-powered
-              risk assessment.
+              Enter your seed phrase to view your assets across different blockchains. All operations are done locally in your browser.
             </p>
           </div>
 
           <SeedPhraseForm
-            onAnalysisComplete={setAnalysisResult}
-            onAnalysisStart={() => setAnalysisResult(null)}
+            onDataFetched={setWalletData}
+            onFetchStart={() => setWalletData(null)}
           />
 
-          {analysisResult && (
+          {walletData && (
             <div className="animate-in fade-in-0 duration-500">
-              <AnalysisResult data={analysisResult} />
+              <AnalysisResult data={walletData} />
             </div>
           )}
         </div>
       </main>
       <footer className="p-4 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} CryptoSeedGate. For educational purposes
+        © {new Date().getFullYear()} CryptoSeed Wallet. For educational purposes
         only.
       </footer>
     </div>

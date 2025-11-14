@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "CryptoSeedGate",
-  description: "Securely analyze your crypto seed phrase for risks.",
+  title: "CryptoSeed Wallet",
+  description: "View your crypto assets from a single seed phrase.",
 };
 
 export default function RootLayout({

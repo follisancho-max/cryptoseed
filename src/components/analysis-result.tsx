@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnalyzeSeedPhraseForRiskOutput } from "@/ai/flows/analyze-seed-phrase-for-risk";
+import type { WalletData, Asset } from "@/app/actions";
 import {
   Card,
   CardContent,
@@ -8,97 +8,77 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { FileText, ShieldAlert, CheckCircle, AlertCircle } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Wallet, Landmark } from "lucide-react";
 
 type AnalysisResultProps = {
-  data: AnalyzeSeedPhraseForRiskOutput;
+  data: WalletData;
+};
+
+const networkIcons: { [key: string]: React.ReactNode } = {
+    "Ethereum": <Landmark className="h-5 w-5 text-gray-500" />,
+    "Bitcoin": <Landmark className="h-5 w-5 text-orange-500" />,
+    "Solana": <Landmark className="h-5 w-5 text-purple-500" />,
+    "Polygon": <Landmark className="h-5 w-5 text-indigo-500" />,
+    "BNB Smart Chain": <Landmark className="h-5 w-5 text-yellow-500" />
 };
 
 export function AnalysisResult({ data }: AnalysisResultProps) {
-  const hasCompromisedAddresses =
-    data.compromisedAddresses && data.compromisedAddresses.length > 0;
-  const hasUnusualPatterns =
-    data.unusualTransactionPatterns && data.unusualTransactionPatterns.trim() !== "";
-  
-  const isHighRisk = hasCompromisedAddresses || hasUnusualPatterns;
+  const totalValue = data.assets.reduce((acc, asset) => acc + asset.valueUsd, 0);
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
-          {isHighRisk ? (
-             <ShieldAlert className="h-7 w-7 text-destructive" />
-          ) : (
-            <CheckCircle className="h-7 w-7 text-green-600" />
-          )}
-         
-          Security Analysis Report
+          <Wallet className="h-7 w-7 text-primary" />
+          My Wallet
         </CardTitle>
         <CardDescription>
-            {isHighRisk 
-              ? "Potential risks have been identified. Please review carefully."
-              : "No critical risks were identified based on our analysis."
-            }
+          Total estimated value:{" "}
+          <span className="font-bold text-foreground">
+            ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="font-semibold text-lg flex items-center gap-2 mb-2">
-            <FileText className="h-5 w-5 text-primary" />
-            AI Risk Assessment
-          </h3>
-          <p className="text-muted-foreground">{data.riskAssessment}</p>
+          <h3 className="font-semibold text-lg mb-2">Asset Overview</h3>
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Network</TableHead>
+                  <TableHead>Asset</TableHead>
+                  <TableHead className="text-right">Balance</TableHead>
+                  <TableHead className="text-right">Value (USD)</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.assets.length > 0 ? (
+                  data.assets.map((asset, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="flex items-center gap-2">
+                        {networkIcons[asset.network] || <Landmark className="h-5 w-5" />}
+                        {asset.network}
+                      </TableCell>
+                      <TableCell className="font-medium">{asset.symbol}</TableCell>
+                      <TableCell className="text-right">{asset.balance.toFixed(6)}</TableCell>
+                      <TableCell className="text-right">
+                        ${asset.valueUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                      No assets found for this seed phrase.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-
-        <Separator />
-
-        <div>
-          <h3 className="font-semibold text-lg flex items-center gap-2 mb-3">
-            {hasCompromisedAddresses ? (
-              <AlertCircle className="h-5 w-5 text-destructive" />
-            ) : (
-              <CheckCircle className="h-5 w-5 text-green-600" />
-            )}
-            Known Compromised Addresses
-          </h3>
-          {hasCompromisedAddresses ? (
-            <div className="space-y-2">
-              <p className="text-sm text-destructive">
-                The following addresses derived from your seed phrase are flagged
-                as potentially compromised:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {data.compromisedAddresses?.map((address, index) => (
-                  <Badge key={index} variant="destructive">
-                    {address}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No known compromised addresses were found linked to this seed
-              phrase.
-            </p>
-          )}
-        </div>
-
-        {hasUnusualPatterns && (
-            <>
-                <Separator />
-                <div>
-                    <h3 className="font-semibold text-lg flex items-center gap-2 mb-2">
-                        <AlertCircle className="h-5 w-5 text-amber-500" />
-                        Unusual Transaction Patterns
-                    </h3>
-                    <p className="text-muted-foreground">
-                        {data.unusualTransactionPatterns}
-                    </p>
-                </div>
-            </>
-        )}
       </CardContent>
     </Card>
   );
