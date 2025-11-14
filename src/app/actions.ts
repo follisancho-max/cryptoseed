@@ -10,8 +10,20 @@ export type Asset = {
   valueUsd: number;
 };
 
+export type Transaction = {
+  id: string;
+  date: string;
+  type: "in" | "out";
+  asset: string;
+  amount: number;
+  valueUsd: number;
+  from: string;
+  to: string;
+};
+
 export type WalletData = {
   assets: Asset[];
+  transactions: Transaction[];
 };
 
 const formSchema = z.object({
@@ -24,41 +36,87 @@ type FetchResult = {
   error?: string;
 };
 
+function mockFetchTransactions(assets: Asset[]): Transaction[] {
+  if (assets.length === 0) {
+    return [];
+  }
+
+  const transactions: Transaction[] = [
+    {
+      id: "tx1",
+      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      type: "in",
+      asset: "ETH",
+      amount: 0.5,
+      valueUsd: 1750.0,
+      from: "0x...abc",
+      to: "My Wallet",
+    },
+    {
+      id: "tx2",
+      date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      type: "out",
+      asset: "BTC",
+      amount: 0.01,
+      valueUsd: 700.0,
+      from: "My Wallet",
+      to: "0x...def",
+    },
+    {
+      id: "tx3",
+      date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      type: "in",
+      asset: "SOL",
+      amount: 10,
+      valueUsd: 1600.0,
+      from: "0x...ghi",
+      to: "My Wallet",
+    },
+  ];
+
+  // Only include transactions for assets the user actually has
+  const userSymbols = new Set(assets.map((a) => a.symbol));
+  return transactions.filter((tx) => userSymbols.has(tx.asset));
+}
+
+
 // This is a mock function. In a real app, this would involve:
 // 1. Deriving private keys from the seed phrase (client-side).
 // 2. Deriving addresses for each blockchain.
-// 3. Calling blockchain nodes/APIs to get balances.
+// 3. Calling blockchain nodes/APIs to get balances and transactions.
 // 4. Fetching token prices to calculate USD value.
-function mockFetchAssetsFromSeed(seedPhrase: string): WalletData {
+function mockFetchDataFromSeed(seedPhrase: string): WalletData {
   // Simple logic: the longer the seed phrase, the more "assets" we find.
   const wordCount = seedPhrase.trim().split(/\s+/).length;
 
   if (wordCount < 12) {
-    return { assets: [] };
+    return { assets: [], transactions: [] };
   }
 
-  const assets: Asset[] = [
+  const baseAssets: Asset[] = [
     { network: "Ethereum", symbol: "ETH", balance: 1.25, valueUsd: 4375.00 },
     { network: "Bitcoin", symbol: "BTC", balance: 0.05, valueUsd: 3500.00 },
     { network: "Solana", symbol: "SOL", balance: 15.5, valueUsd: 2480.00 },
   ];
   
   if (wordCount >= 18) {
-     assets.push({ network: "Polygon", symbol: "MATIC", balance: 2500, valueUsd: 1750.00 });
+     baseAssets.push({ network: "Polygon", symbol: "MATIC", balance: 2500, valueUsd: 1750.00 });
   }
 
   if (wordCount >= 24) {
-      assets.push({ network: "BNB Smart Chain", symbol: "BNB", balance: 3.2, valueUsd: 1920.00 });
+      baseAssets.push({ network: "BNB Smart Chain", symbol: "BNB", balance: 3.2, valueUsd: 1920.00 });
   }
   
   // Add some randomness to balances based on seed phrase length
-  return {
-    assets: assets.map(asset => ({
-        ...asset,
-        balance: asset.balance * (1 + (seedPhrase.length % 10) / 20),
-        valueUsd: asset.valueUsd * (1 + (seedPhrase.length % 10) / 20)
-    })),
-  };
+  const assets = baseAssets.map(asset => ({
+      ...asset,
+      balance: asset.balance * (1 + (seedPhrase.length % 10) / 20),
+      valueUsd: asset.valueUsd * (1 + (seedPhrase.length % 10) / 20)
+  }));
+
+  const transactions = mockFetchTransactions(assets);
+
+  return { assets, transactions };
 }
 
 
@@ -84,7 +142,7 @@ export async function handleFetchData(
     // This server action would orchestrate calls to blockchain data providers.
     // The derivation from seed phrase would happen securely on the client.
     // Here, we simulate this process for demonstration.
-    const result = mockFetchAssetsFromSeed(validatedFields.data.seedPhrase);
+    const result = mockFetchDataFromSeed(validatedFields.data.seedPhrase);
     return {
       success: true,
       data: result,

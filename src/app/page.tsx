@@ -5,6 +5,7 @@ import type { WalletData } from "@/app/actions";
 import { Logo } from "@/components/icons";
 import { SeedPhraseForm } from "@/components/seed-phrase-form";
 import { AnalysisResult } from "@/components/analysis-result";
+import { TransactionHistory } from "@/components/transaction-history";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 
@@ -45,8 +46,9 @@ export default function Home() {
           />
 
           {walletData && (
-            <div className="animate-in fade-in-0 duration-500">
+            <div className="space-y-8 animate-in fade-in-0 duration-500">
               <AnalysisResult data={walletData} />
+              <TransactionHistory transactions={walletData.transactions} />
             </div>
           )}
         </div>
