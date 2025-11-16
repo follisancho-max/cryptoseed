@@ -28,7 +28,7 @@ export type WalletData = {
 
 const formSchema = z.object({
   seedPhrase: z.string(),
-  networks: z.array(z.string()),
+  network: z.string(),
 });
 
 type FetchResult = {
@@ -87,7 +87,7 @@ function mockFetchTransactions(assets: Asset[]): Transaction[] {
 // 4. Fetching token prices to calculate USD value.
 function mockFetchDataFromSeed(
   seedPhrase: string,
-  networks: string[]
+  network: string
 ): WalletData {
   // Simple logic: the longer the seed phrase, the more "assets" we find.
   const wordCount = seedPhrase.trim().split(/\s+/).length;
@@ -107,11 +107,14 @@ function mockFetchDataFromSeed(
     { network: "Polkadot", symbol: "DOT", balance: 100, valueUsd: 700.0 },
     { network: "Litecoin", symbol: "LTC", balance: 10, valueUsd: 800.0 },
     { network: "Chainlink", symbol: "LINK", balance: 200, valueUsd: 2800.0 },
+    { network: "Tron", symbol: "TRX", balance: 50000, valueUsd: 5500.0 },
+    { network: "Stellar", symbol: "XLM", balance: 10000, valueUsd: 1100.0 },
+    { network: "Tezos", symbol: "XTZ", balance: 1000, valueUsd: 800.0 },
   ];
 
   // Filter assets based on selected networks
   const selectedAssets = allAssets.filter((asset) =>
-    networks.includes(asset.network)
+    asset.network === network
   );
   
   if (selectedAssets.length === 0) {
@@ -136,7 +139,7 @@ export async function handleFetchData(
 ): Promise<FetchResult> {
   const rawFormData = {
     seedPhrase: formData.get("seedPhrase"),
-    networks: formData.getAll("networks"),
+    network: formData.get("network"),
   };
 
   const validatedFields = formSchema.safeParse(rawFormData);
@@ -156,7 +159,7 @@ export async function handleFetchData(
     // Here, we simulate this process for demonstration.
     const result = mockFetchDataFromSeed(
       validatedFields.data.seedPhrase,
-      validatedFields.data.networks
+      validatedFields.data.network
     );
     return {
       success: true,
