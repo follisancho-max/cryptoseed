@@ -23,11 +23,11 @@ type AnalysisResultProps = {
 };
 
 const networkIcons: { [key: string]: React.ReactNode } = {
-    "Ethereum": <Landmark className="h-5 w-5 text-gray-500" />,
-    "Bitcoin": <Landmark className="h-5 w-5 text-orange-500" />,
-    "Solana": <Landmark className="h-5 w-5 text-purple-500" />,
-    "Polygon": <Landmark className="h-5 w-5 text-indigo-500" />,
-    "BNB Smart Chain": <Landmark className="h-5 w-5 text-yellow-500" />
+    "Ethereum": <Landmark className="h-5 w-5 text-gray-400" />,
+    "Bitcoin": <Landmark className="h-5 w-5 text-orange-400" />,
+    "Solana": <Landmark className="h-5 w-5 text-purple-400" />,
+    "Polygon": <Landmark className="h-5 w-5 text-indigo-400" />,
+    "BNB Smart Chain": <Landmark className="h-5 w-5 text-yellow-400" />
 };
 
 const chartColors = [
@@ -57,7 +57,7 @@ export function AnalysisResult({ data }: AnalysisResultProps) {
   }, {} as ChartConfig);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-card/50 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
           <Wallet className="h-7 w-7 text-primary" />
@@ -95,6 +95,7 @@ export function AnalysisResult({ data }: AnalysisResultProps) {
                         nameKey="name"
                         innerRadius={50}
                         strokeWidth={5}
+                        stroke="hsl(var(--background))"
                         >
                         {chartData.map((entry) => (
                             <Cell key={`cell-${entry.name}`} fill={entry.fill} />
@@ -105,10 +106,10 @@ export function AnalysisResult({ data }: AnalysisResultProps) {
             </div>
             <div className="flex-1">
                 <h3 className="font-semibold text-lg mb-2">Asset Overview</h3>
-                <div className="border rounded-lg">
+                <div className="border rounded-lg border-primary/20">
                     <Table>
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="border-primary/20">
                         <TableHead>Asset</TableHead>
                         <TableHead className="text-right">Balance</TableHead>
                         <TableHead className="text-right">Value (USD)</TableHead>
@@ -117,7 +118,7 @@ export function AnalysisResult({ data }: AnalysisResultProps) {
                     <TableBody>
                         {data.assets.length > 0 ? (
                         data.assets.map((asset, index) => (
-                            <TableRow key={index}>
+                            <TableRow key={index} className="border-primary/10">
                                 <TableCell className="flex items-center gap-2 font-medium">
                                     {networkIcons[asset.network] || <Landmark className="h-5 w-5" />}
                                     {asset.symbol}

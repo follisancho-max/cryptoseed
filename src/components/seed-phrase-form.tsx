@@ -105,7 +105,7 @@ export function SeedPhraseForm({
   }
 
   return (
-    <Card>
+    <Card className="bg-card/50 border-primary/20">
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -159,7 +159,7 @@ export function SeedPhraseForm({
               )}
             />
 
-            <FormDescription className="pt-4">
+            <FormDescription className="pt-4 !text-sm text-muted-foreground">
               Your seed phrase is processed locally in your browser and is never
               sent to our servers.
             </FormDescription>
@@ -167,7 +167,7 @@ export function SeedPhraseForm({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-accent hover:bg-accent/90"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {isSubmitting ? (
                 <>

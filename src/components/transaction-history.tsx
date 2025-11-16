@@ -30,7 +30,7 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-card/50 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
           <History className="h-7 w-7 text-primary" />
@@ -41,10 +41,10 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="border rounded-lg">
+        <div className="border rounded-lg border-primary/20">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="border-primary/20">
                 <TableHead>Transaction</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="text-right hidden sm:table-cell">
@@ -55,14 +55,14 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
             </TableHeader>
             <TableBody>
               {transactions.map((tx) => (
-                <TableRow key={tx.id}>
+                <TableRow key={tx.id} className="border-primary/10">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center h-8 w-8 rounded-full bg-muted">
+                      <div className="flex items-center justify-center h-8 w-8 rounded-full bg-secondary">
                         {tx.type === "in" ? (
-                          <ArrowDownLeft className="h-4 w-4 text-green-500" />
+                          <ArrowDownLeft className="h-4 w-4 text-accent" />
                         ) : (
-                          <ArrowUpRight className="h-4 w-4 text-red-500" />
+                          <ArrowUpRight className="h-4 w-4 text-destructive" />
                         )}
                       </div>
                       <div className="flex flex-col">
@@ -76,7 +76,7 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <span className={`font-medium ${tx.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className={`font-medium ${tx.type === 'in' ? 'text-accent' : 'text-destructive'}`}>
                       {tx.type === 'in' ? '+' : '-'}
                       {tx.amount.toFixed(4)} {tx.asset}
                     </span>

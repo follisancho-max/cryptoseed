@@ -9,7 +9,7 @@ import { Github, Wallet, ShieldCheck, Zap } from "lucide-react";
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
-      <header className="flex items-center justify-between p-4 border-b">
+      <header className="flex items-center justify-between p-4 border-b border-primary/20">
         <div className="flex items-center gap-3">
           <Logo className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold tracking-tight text-primary">
@@ -23,25 +23,25 @@ export default function LandingPage() {
                     <span className="sr-only">GitHub</span>
                 </a>
             </Button>
-            <Button asChild>
+            <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Link href="/wallet">Go to App</Link>
             </Button>
         </div>
       </header>
       <main className="flex-1 w-full">
         <section className="flex flex-col items-center justify-center text-center py-20 px-4 sm:py-28">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight font-headline">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               One Phrase to Rule Them All
             </h2>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Securely view all your crypto assets from a single seed phrase. Our platform supports multiple blockchains and keeps your data private by processing everything in your browser.
             </p>
-            <Button asChild size="lg" className="mt-8 bg-accent hover:bg-accent/90">
+            <Button asChild size="lg" className="mt-8 bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Link href="/wallet">View Your Wallet Instantly</Link>
             </Button>
         </section>
 
-        <section className="bg-muted/50 py-20 px-4">
+        <section className="bg-card/50 py-20 px-4">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
                     <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Why Choose CryptoSeed Wallet?</h3>

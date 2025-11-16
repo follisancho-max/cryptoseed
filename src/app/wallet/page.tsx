@@ -17,7 +17,7 @@ export default function WalletPage() {
 
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
-      <header className="flex items-center justify-between p-4 border-b">
+      <header className="flex items-center justify-between p-4 border-b border-primary/20">
         <Link href="/" className="flex items-center gap-3">
           <Logo className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold tracking-tight text-primary">
@@ -34,7 +34,7 @@ export default function WalletPage() {
       <main className="flex-1 w-full flex flex-col items-center p-4 sm:p-6">
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-headline">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
               Universal Seed Phrase Wallet
             </h2>
             <p className="mt-3 text-lg text-muted-foreground max-w-lg mx-auto">
