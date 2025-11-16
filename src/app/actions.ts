@@ -102,6 +102,11 @@ function mockFetchDataFromSeed(
     { network: "Solana", symbol: "SOL", balance: 15.5, valueUsd: 2480.0 },
     { network: "Polygon", symbol: "MATIC", balance: 2500, valueUsd: 1750.0 },
     { network: "BNB Smart Chain", symbol: "BNB", balance: 3.2, valueUsd: 1920.0 },
+    { network: "Avalanche", symbol: "AVAX", balance: 50, valueUsd: 1800.0 },
+    { network: "Cardano", symbol: "ADA", balance: 10000, valueUsd: 4500.0 },
+    { network: "Polkadot", symbol: "DOT", balance: 100, valueUsd: 700.0 },
+    { network: "Litecoin", symbol: "LTC", balance: 10, valueUsd: 800.0 },
+    { network: "Chainlink", symbol: "LINK", balance: 200, valueUsd: 2800.0 },
   ];
 
   // Filter assets based on selected networks
