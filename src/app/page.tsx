@@ -1,18 +1,12 @@
+
 "use client";
 
-import { useState } from "react";
-import type { WalletData } from "@/app/actions";
+import Link from "next/link";
 import { Logo } from "@/components/icons";
-import { SeedPhraseForm } from "@/components/seed-phrase-form";
-import { AnalysisResult } from "@/components/analysis-result";
-import { TransactionHistory } from "@/components/transaction-history";
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Wallet, ShieldCheck, Zap } from "lucide-react";
 
-export default function Home() {
-  const [walletData, setWalletData] =
-    useState<WalletData | null>(null);
-
+export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <header className="flex items-center justify-between p-4 border-b">
@@ -22,36 +16,62 @@ export default function Home() {
             CryptoSeed Wallet
           </h1>
         </div>
-        <Button variant="ghost" size="icon" asChild>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-            <Github className="h-5 w-5" />
-            <span className="sr-only">GitHub</span>
-          </a>
-        </Button>
-      </header>
-      <main className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-2xl space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-headline">
-              Universal Seed Phrase Wallet
-            </h2>
-            <p className="mt-3 text-lg text-muted-foreground max-w-lg mx-auto">
-              Enter your seed phrase to view your assets across different blockchains. All operations are done locally in your browser.
-            </p>
-          </div>
-
-          <SeedPhraseForm
-            onDataFetched={setWalletData}
-            onFetchStart={() => setWalletData(null)}
-          />
-
-          {walletData && (
-            <div className="space-y-8 animate-in fade-in-0 duration-500">
-              <AnalysisResult data={walletData} />
-              <TransactionHistory transactions={walletData.transactions} />
-            </div>
-          )}
+        <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" asChild>
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                    <Github className="h-5 w-5" />
+                    <span className="sr-only">GitHub</span>
+                </a>
+            </Button>
+            <Button asChild>
+                <Link href="/wallet">Go to App</Link>
+            </Button>
         </div>
+      </header>
+      <main className="flex-1 w-full">
+        <section className="flex flex-col items-center justify-center text-center py-20 px-4 sm:py-28">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight font-headline">
+              One Phrase to Rule Them All
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+              Securely view all your crypto assets from a single seed phrase. Our platform supports multiple blockchains and keeps your data private by processing everything in your browser.
+            </p>
+            <Button asChild size="lg" className="mt-8 bg-accent hover:bg-accent/90">
+                <Link href="/wallet">View Your Wallet Instantly</Link>
+            </Button>
+        </section>
+
+        <section className="bg-muted/50 py-20 px-4">
+            <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-12">
+                    <h3 className="text-3xl md:text-4xl font-bold tracking-tight">Why Choose CryptoSeed Wallet?</h3>
+                    <p className="mt-3 text-lg text-muted-foreground">A secure and simple way to manage your crypto portfolio.</p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mb-4">
+                            <Wallet className="h-8 w-8" />
+                        </div>
+                        <h4 className="text-xl font-semibold mb-2">Universal Wallet</h4>
+                        <p className="text-muted-foreground">No more switching apps. View assets from Ethereum, Bitcoin, Solana, and many more networks all in one place.</p>
+                    </div>
+                     <div className="flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mb-4">
+                            <ShieldCheck className="h-8 w-8" />
+                        </div>
+                        <h4 className="text-xl font-semibold mb-2">Client-Side Security</h4>
+                        <p className="text-muted-foreground">Your seed phrase is your key. It's processed only in your browser and is never sent to our servers. Ever.</p>
+                    </div>
+                     <div className="flex flex-col items-center text-center">
+                        <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mb-4">
+                            <Zap className="h-8 w-8" />
+                        </div>
+                        <h4 className="text-xl font-semibold mb-2">Instant & Simple</h4>
+                        <p className="text-muted-foreground">Just enter your seed phrase and instantly see your portfolio. No sign-ups, no lengthy setups.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
       </main>
       <footer className="p-4 text-center text-sm text-muted-foreground">
         © {new Date().getFullYear()} CryptoSeed Wallet. For educational purposes
