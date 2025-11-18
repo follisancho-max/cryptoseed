@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
@@ -5,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { Logo } from "@/components/icons";
 import Link from "next/link";
-import { LayoutDashboard, Wallet, Cog } from "lucide-react";
+import { LayoutDashboard, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -63,14 +64,6 @@ export default function RootLayout({
                     <Link href="/wallet">
                       <Wallet />
                       <span>Wallet</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Admin">
-                    <Link href="/admin">
-                      <Cog />
-                      <span>Admin</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
