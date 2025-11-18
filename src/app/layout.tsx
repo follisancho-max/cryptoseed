@@ -38,9 +38,7 @@ export default function RootLayout({
           <Sidebar>
             <SidebarHeader>
               <div className="flex items-center gap-2 p-2">
-                 <Button variant="ghost" size="icon" className="md:hidden">
-                    <SidebarTrigger />
-                 </Button>
+                 <SidebarTrigger className="md:hidden" />
                  <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
                   <Logo className="w-7 h-7" />
                   <span className="group-data-[collapsible=icon]:hidden">
@@ -72,9 +70,7 @@ export default function RootLayout({
           </Sidebar>
           <SidebarInset>
             <header className="flex items-center justify-between p-2 border-b">
-                <Button variant="ghost" size="icon">
-                    <SidebarTrigger />
-                </Button>
+                <SidebarTrigger />
                 <h1 className="text-xl font-semibold tracking-tight">
                     CryptoSeed Wallet
                 </h1>
