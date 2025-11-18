@@ -1,0 +1,29 @@
+
+{
+    "hero": {
+        "title": "One Phrase to Rule Them All",
+        "subtitle": "Securely view all your crypto assets from a single seed phrase. Our platform supports multiple blockchains and keeps your data private by processing everything in your browser.",
+        "cta": "View Your Wallet Instantly"
+    },
+    "features": {
+        "title": "Why Choose CryptoSeed Wallet?",
+        "subtitle": "A secure and simple way to manage your crypto portfolio.",
+        "items": [
+            {
+                "icon": "Wallet",
+                "title": "Universal Wallet",
+                "description": "No more switching apps. View assets from Ethereum, Bitcoin, Solana, and many more networks all in one place."
+            },
+            {
+                "icon": "ShieldCheck",
+                "title": "Client-Side Security",
+                "description": "Your seed phrase is your key. It's processed only in your browser and is never sent to our servers. Ever."
+            },
+            {
+                "icon": "Zap",
+                "title": "Instant & Simple",
+                "description": "Just enter your seed phrase and instantly see your portfolio. No sign-ups, no lengthy setups."
+            }
+        ]
+    }
+}
