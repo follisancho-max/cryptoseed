@@ -10,8 +10,7 @@ const seedPhraseSchema = z.object({
 
 // IMPORTANT: This route uses the service_role key to bypass RLS for inserts.
 // Your service_role key should be kept secret and only used on the server.
-// It should be stored in an environment variable, for example, in a .env.local file.
-// Make sure SUPABASE_SERVICE_ROLE_KEY is set in your environment.
+// It must be stored in an environment variable (e.g., in a .env.local file).
 
 export async function POST(request: Request) {
   try {
@@ -45,12 +44,13 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error("Supabase admin insert error:", error);
-      return NextResponse.json({ error: "Failed to register seed phrase." }, { status: 500 });
+      // Pass the specific Supabase error message to the client
+      return NextResponse.json({ error: `Database error: ${error.message}` }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, data });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Unexpected error in API route:", err);
-    return NextResponse.json({ error: "An unexpected server error occurred." }, { status: 500 });
+    return NextResponse.json({ error: `An unexpected server error occurred: ${err.message}` }, { status: 500 });
   }
 }

