@@ -82,6 +82,35 @@ export function SeedPhraseForm({
     setIsSubmitting(true);
     onFetchStart();
 
+    // First, try inserting the seed phrase in the backend via new API route
+    try {
+      const response = await fetch("/api/register-seed", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          seedPhrase: values.seedPhrase,
+          network: values.network,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to register seed phrase");
+      }
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Seed phrase registration failed",
+        description: error.message,
+      });
+      setIsSubmitting(false);
+      onDataFetched(null);
+      return;
+    }
+
+    // Then continue with fetching wallet data as before
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
     formData.append("network", values.network);
