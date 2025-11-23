@@ -4,12 +4,15 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseServiceRoleKey) {
-      console.error("Server-side Supabase environment variables are missing.");
-      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+      let missingVars = [];
+      if (!supabaseUrl) missingVars.push("SUPABASE_URL");
+      if (!supabaseServiceRoleKey) missingVars.push("SUPABASE_SERVICE_ROLE_KEY");
+      console.error(`Server configuration error: Missing environment variables: ${missingVars.join(", ")}. Please check your .env.local file.`);
+      return NextResponse.json({ error: `Server configuration error: Required environment variables are not set.` }, { status: 500 });
     }
 
     // Create a new Supabase client with the service_role key for this server-side operation
