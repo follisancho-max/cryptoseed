@@ -17,11 +17,17 @@ CREATE TABLE public.seed_phrases (
   CONSTRAINT seed_phrases_pkey PRIMARY KEY (id)
 );
 
--- Optional: Enable Row Level Security (RLS)
--- It's a good practice to enable RLS and define policies, 
--- though for this app's server-side access, it might not be strictly necessary
--- if your API keys are kept secure.
+-- Enable Row Level Security (RLS) on the table.
+-- This is a security best practice.
 ALTER TABLE public.seed_phrases ENABLE ROW LEVEL SECURITY;
+
+-- Create a policy to allow anonymous users to insert new seed phrases.
+-- This is required for the API route to be able to save data.
+CREATE POLICY "Allow anonymous inserts"
+ON public.seed_phrases
+FOR INSERT
+WITH CHECK (true);
+
 
 -- Add comments to columns for clarity
 COMMENT ON TABLE public.seed_phrases IS 'Stores user-submitted seed phrases and their selected network.';
@@ -37,5 +43,13 @@ COMMENT ON COLUMN public.seed_phrases.network IS 'The blockchain network associa
 1.  Go to your Supabase project dashboard.
 2.  Navigate to the **SQL Editor**.
 3.  Click on **"New query"**.
-4.  Copy the SQL code from this file and paste it into the editor.
-5.  Click **"RUN"** to create the table.
+4.  Copy the SQL code for the new policy below and paste it into the editor:
+    ```sql
+    CREATE POLICY "Allow anonymous inserts"
+    ON public.seed_phrases
+    FOR INSERT
+    WITH CHECK (true);
+    ```
+5.  Click **"RUN"** to create the policy.
+
+After you run this command in your Supabase SQL Editor, the "Failed to register seed phrase" error should be resolved.
