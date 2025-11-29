@@ -1,6 +1,6 @@
 "use client";
 
-import type { WalletData, Asset } from "@/app/actions";
+import type { WalletData, Asset } from "@/lib/types";
 import {
   Card,
   CardContent,

