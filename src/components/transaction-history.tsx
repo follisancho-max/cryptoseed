@@ -1,6 +1,7 @@
+
 "use client";
 
-import type { Transaction } from "@/app/actions";
+import type { Transaction } from "@/lib/types";
 import {
   Card,
   CardContent,

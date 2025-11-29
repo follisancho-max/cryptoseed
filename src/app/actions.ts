@@ -1,3 +1,4 @@
+
 "use server";
 
 import { z } from "zod";
@@ -34,6 +35,12 @@ export async function registerSeedPhrase(
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // Temporary debugging logs
+  console.log("SERVER ACTION ENV VARS:");
+  console.log("URL:", supabaseUrl ? "Loaded" : "undefined");
+  console.log("ROLE KEY:", supabaseServiceRoleKey ? "Loaded" : "undefined");
+
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
     let missingVars = [];
