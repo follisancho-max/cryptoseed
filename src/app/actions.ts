@@ -33,12 +33,6 @@ const formSchema = z.object({
   network: z.string(),
 });
 
-type FetchResult = {
-  success: boolean;
-  data?: WalletData;
-  error?: string;
-};
-
 type RegistrationResult = {
   success: boolean;
   error?: string;
@@ -188,6 +182,12 @@ function mockFetchDataFromSeed(
 
   return { assets, transactions };
 }
+
+type FetchResult = {
+  success: boolean;
+  data?: WalletData;
+  error?: string;
+};
 
 export async function handleFetchData(
   formData: FormData
