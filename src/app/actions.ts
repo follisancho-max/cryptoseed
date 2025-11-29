@@ -61,14 +61,17 @@ export async function registerSeedPhrase(
     };
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
-    console.error("Supabase server-side environment variables are not set.");
+    let missingVars = [];
+    if (!supabaseUrl) missingVars.push("SUPABASE_URL");
+    if (!supabaseServiceRoleKey) missingVars.push("SUPABASE_SERVICE_ROLE_KEY");
+    console.error(`Supabase server-side environment variables are not set: ${missingVars.join(", ")}`);
     return {
       success: false,
-      error: "Server configuration error. Cannot connect to the database.",
+      error: "Server configuration error. Required environment variables are not set.",
     };
   }
 
