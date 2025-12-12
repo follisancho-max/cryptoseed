@@ -73,30 +73,6 @@ export async function updateLandingPageImages(
 
   const supabaseAdmin = createClient();
   const bucketName = "landing-images";
-
-  // Ensure the bucket exists
-  try {
-    const { data: bucket, error: bucketError } = await supabaseAdmin.storage.getBucket(bucketName);
-    if (bucketError && bucketError.message.includes('not found')) { // More robust check
-       const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, {
-        public: true,
-        allowedMimeTypes: ["image/*"],
-        // upsert: true is not a valid option for createBucket
-      });
-      if (createError) {
-        console.error("Supabase create bucket error:", createError);
-        return { success: false, error: `Failed to create storage bucket: ${createError.message}` };
-      }
-    } else if (bucketError) {
-        console.error("Supabase get bucket error:", bucketError);
-        return { success: false, error: `Failed to access storage bucket: ${bucketError.message}` };
-    }
-  } catch (err: any) {
-     console.error("Unexpected error checking bucket:", err);
-     return { success: false, error: "An unexpected server error occurred while checking storage." };
-  }
-
-
   const updatedUrls: Record<string, string> = {};
 
   // Fetch the current content
