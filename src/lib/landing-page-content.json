@@ -100,6 +100,26 @@
         "imageAlt": "Ronin wallet showing portfolio overview and asset list",
         "imageHint": "crypto portfolio"
     },
+    "testimonials": [
+        {
+            "company": "Blockchain.com",
+            "quote": "Blocklith simplifies the integration process for new chains and networks, allowing us to rapidly add support for new chains to our wallet. Their proactive approach ensures we're always up-to-date with the latest chains.",
+            "author": "Jakub Hruby",
+            "avatarUrl": "https://picsum.photos/seed/avatar1/40/40"
+        },
+        {
+            "company": "Polygon",
+            "quote": "Blocklith provides world-class APIs to developers across the globe, allowing companies and projects of all sizes to seamlessly integrate blockchain into their solutions stack and scale with easy.",
+            "author": "Sandeep Nailwal",
+            "avatarUrl": "https://picsum.photos/seed/avatar2/40/40"
+        },
+        {
+            "company": "MetaMask",
+            "quote": "With Blocklith's NFT API, we can focus on the user experience of our Portfolio dapp, without worrying about scaling our infra to millions of users.",
+            "author": "Kai Huang",
+            "avatarUrl": "https://picsum.photos/seed/avatar3/40/40"
+        }
+    ],
     "features": {
         "title": "Why Choose CryptoSeed?",
         "subtitle": "A secure, simple, and powerful way to interact with blockchain data.",

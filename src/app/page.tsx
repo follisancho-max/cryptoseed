@@ -189,6 +189,50 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-8 mb-16">
+                  {content.testimonials.map((testimonial, index) => (
+                      <div key={index} className="bg-card/30 border border-border p-6 rounded-lg">
+                          <div className="flex items-center gap-2 mb-4">
+                              <p className="font-bold text-lg grayscale">{testimonial.company}</p>
+                          </div>
+                          <p className="text-muted-foreground mb-6">{testimonial.quote}</p>
+                          <div className="flex items-center gap-3">
+                              <Image 
+                                  src={testimonial.avatarUrl}
+                                  alt={testimonial.author}
+                                  width={40}
+                                  height={40}
+                                  className="rounded-full"
+                                  data-ai-hint="person photo"
+                              />
+                              <div>
+                                  <p className="font-semibold">{testimonial.author}</p>
+                                  <p className="text-sm text-muted-foreground">{testimonial.company}</p>
+                              </div>
+                          </div>
+                      </div>
+                  ))}
+              </div>
+
+              <div className="text-center">
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">50+ Chains. <br /> 1 Unified Schema.</h2>
+                  <div className="flex justify-center gap-4 mb-12">
+                      <Button size="lg">View All <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                      <Button size="lg" variant="outline">Request Network</Button>
+                  </div>
+                  <div className="flex flex-wrap justify-center items-center gap-4">
+                      {chainIcons.map((icon, index) => (
+                          <div key={index} className="bg-card/50 p-3 rounded-xl border border-border">
+                              {icon}
+                          </div>
+                      ))}
+                  </div>
+              </div>
+          </div>
+        </section>
         
         <section className="bg-card/50 py-20 px-4 mt-20">
             <div className="max-w-5xl mx-auto">
