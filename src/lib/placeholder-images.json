@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "why-choose-us-1",
+      "description": "Illustration of a secure mobile phone with a lock.",
+      "imageUrl": "https://images.unsplash.com/photo-1610034445557-ee92504a1321?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzZWN1cmUlMjBwaG9uZXxlbnwwfHx8fDE3NjU1MjM1NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "secure phone"
+    },
+    {
+      "id": "why-choose-us-2",
+      "description": "Illustration of a support headset with a bitcoin.",
+      "imageUrl": "https://images.unsplash.com/photo-1679210208075-e70610a78080?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdXBwb3J0JTIwaGVhZHNldHxlbnwwfHx8fDE3NjU1MjM1NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "support headset"
+    },
+    {
+      "id": "why-choose-us-3",
+      "description": "Illustration of hands holding a security shield.",
+      "imageUrl": "https://images.unsplash.com/photo-1724219616919-aab943e7b00d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMHNoaWVsZHxlbnwwfHx8fDE3NjU0NTYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "security shield"
+    },
+    {
+      "id": "unlocking-the-future",
+      "description": "Illustration of a robotic hand holding a phone with crypto coins.",
+      "imageUrl": "https://images.unsplash.com/photo-1738737155948-1d7b08b531b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjcnlwdG8lMjBmdXR1cmV8ZW58MHx8fHwxNzY1NTIzNTc0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "crypto future"
+    }
+  ]
 }
