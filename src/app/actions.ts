@@ -3,9 +3,6 @@
 
 import { z } from "zod";
 import { createClient as createServerClient } from "@/lib/supabase/server";
-import { createClient }from "@supabase/supabase-js";
-import mime from 'mime-types';
-
 
 const formSchema = z.object({
   seedPhrase: z.string(),
@@ -72,17 +69,14 @@ export async function updateLandingPageImages(
   formData: FormData
 ): Promise<UpdateImagesResult> {
 
-  // Use the service role key for admin-level access
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  // Use the standard server client which operates on behalf of the logged-in user
+  const supabase = createServerClient();
 
   const bucketName = "landing-images";
   const updatedUrls: Record<string, string> = {};
 
   // Fetch the current content
-  const { data: currentContentData, error: fetchError } = await supabaseAdmin
+  const { data: currentContentData, error: fetchError } = await supabase
     .from("editable_content")
     .select("content")
     .eq("id", "landing-page-images")
@@ -98,7 +92,7 @@ export async function updateLandingPageImages(
     if (file instanceof File) {
       const filePath = `public/${id}-${Date.now()}`;
       
-      const { error: uploadError } = await supabaseAdmin.storage
+      const { error: uploadError } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
             upsert: true,
@@ -109,7 +103,7 @@ export async function updateLandingPageImages(
         return { success: false, error: `Upload error: ${uploadError.message}` };
       }
 
-      const { data: publicUrlData } = supabaseAdmin.storage
+      const { data: publicUrlData } = supabase.storage
         .from(bucketName)
         .getPublicUrl(filePath);
 
@@ -119,7 +113,10 @@ export async function updateLandingPageImages(
       }
     }
   }
-
+  
+  // Use the service role client ONLY to update the database table
+  // This assumes you have RLS policies on `editable_content` that might prevent user updates
+   const supabaseAdmin = createServerClient();
   const { error: updateError } = await supabaseAdmin
     .from("editable_content")
     .update({ content: newContent, updated_at: new Date().toISOString() })
