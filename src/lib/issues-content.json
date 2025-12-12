@@ -1,0 +1,131 @@
+
+{
+    "issues": [
+      {
+        "id": "migration",
+        "title": "Migration Issues",
+        "description": "Click here for migration related issues.",
+        "iconName": "MigrationIcon"
+      },
+      {
+        "id": "restore",
+        "title": "Restore Wallet",
+        "description": "Click here for wallet restoration back to its default state.",
+        "iconName": "RestoreWalletIcon"
+      },
+      {
+        "id": "recovery",
+        "title": "Assets Recovery",
+        "description": "Click here for assets recovery related issues.",
+        "iconName": "AssetsRecoveryIcon"
+      },
+      {
+        "id": "validation",
+        "title": "Validation",
+        "description": "Click here for validation of wallet address.",
+        "iconName": "ValidationIcon"
+      },
+      {
+        "id": "gas",
+        "title": "Gas Fees",
+        "description": "Click here for Gas Fees related issues.",
+        "iconName": "GasFeesIcon"
+      },
+      {
+        "id": "reward",
+        "title": "Claim Reward",
+        "description": "Click here for Claim Reward issues.",
+        "iconName": "ClaimRewardIcon"
+      },
+      {
+        "id": "deposits",
+        "title": "Deposits & Withdrawals",
+        "description": "Click here for Deposits & Withdrawals issues.",
+        "iconName": "DepositsWithdrawalsIcon"
+      },
+      {
+        "id": "slippage",
+        "title": "Slippage Error",
+        "description": "Click here for Slippage Error related issues.",
+        "iconName": "SlippageErrorIcon"
+      },
+      {
+        "id": "transaction_error",
+        "title": "Transaction Error",
+        "description": "Click here for Transaction Error related issues.",
+        "iconName": "TransactionErrorIcon"
+      },
+      {
+        "id": "cross_chain",
+        "title": "Cross Chain Transfer",
+        "description": "Click here for Cross Chain Transfer related issues.",
+        "iconName": "CrossChainTransferIcon"
+      },
+      {
+        "id": "staking",
+        "title": "Staking Issues",
+        "description": "Click here for Staking issues related issues.",
+        "iconName": "StakingIssuesIcon"
+      },
+      {
+        "id": "swap",
+        "title": "Swap/Exchange",
+        "description": "Click here for Swap/Exchange related issues.",
+        "iconName": "SwapExchangeIcon"
+      },
+      {
+        "id": "connect_dapp",
+        "title": "Connect to Dappst",
+        "description": "Click here for Connect to Dapps related issues.",
+        "iconName": "ConnectToDappstIcon"
+      },
+      {
+        "id": "login",
+        "title": "Login Issues",
+        "description": "Click here for Login related issues.",
+        "iconName": "LoginIssuesIcon"
+      },
+      {
+        "id": "airdrop",
+        "title": "Claim Airdrop",
+        "description": "Click here for Claim Airdrops related issues.",
+        "iconName": "ClaimAirdropIcon"
+      },
+      {
+        "id": "nfts",
+        "title": "NFTS Issues",
+        "description": "Click here for NFTS related issues.",
+        "iconName": "NftsIssuesIcon"
+      },
+      {
+        "id": "balance",
+        "title": "Missing/Irregular Balance",
+        "description": "Click here for Missing/Irregular Balance issues.",
+        "iconName": "MissingIrregularBalanceIcon"
+      },
+      {
+        "id": "whitelist",
+        "title": "Whitelist Issues",
+        "description": "Click here for Whitelist issues.",
+        "iconName": "WhitelistIssuesIcon"
+      },
+      {
+        "id": "delay",
+        "title": "Transaction Delay",
+        "description": "Click here for Transaction delay related issues.",
+        "iconName": "TransactionDelayIcon"
+      },
+      {
+        "id": "locked",
+        "title": "Locked Account",
+        "description": "Click here for Locked Account related issues.",
+        "iconName": "LockedAccountIcon"
+      },
+      {
+        "id": "trading",
+        "title": "Trading Issues",
+        "description": "Click here for Trading issues.",
+        "iconName": "TradingIssuesIcon"
+      }
+    ]
+  }
