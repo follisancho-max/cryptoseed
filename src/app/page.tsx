@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database, Headset, DollarSign, FileText } from "lucide-react";
+import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database, Headset, DollarSign, FileText, Youtube, Twitter, Linkedin, CheckCircle2 } from "lucide-react";
 import content from "@/lib/landing-page-content.json";
 import { 
   BitcoinIcon, 
@@ -19,6 +19,13 @@ import {
 } from "@/components/icons";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+
+const SocialIcons: { [key: string]: React.ReactNode } = {
+  Youtube: <Youtube className="h-5 w-5" />,
+  X: <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 16 16"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.31l5.74-6.57L0 .75h5.063l3.495 4.633L12.602.75zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>,
+  LinkedIn: <Linkedin className="h-5 w-5" />,
+  Discord: <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 16 16"><path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8.2 8.2 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.037c.334 1.425.98 3.23.98 3.23.021.056.075.075.12.075l.007-.005a8.2 8.2 0 0 0 4.505-1.548.05.05 0 0 0 .002-.021A8.7 8.7 0 0 0 12 6.121c.021-.056.075-.075.12-.075l.007.005a8.2 8.2 0 0 0 4.505 1.548.05.05 0 0 0 .12-.075s.646-1.805.98-3.23a.04.04 0 0 0-.021-.037M8 10.435c-.982 0-1.777-.733-1.777-1.635 0-.901.795-1.634 1.777-1.634.982 0 1.777.733 1.777 1.634 0 .902-.795 1.635-1.777 1.635m-3.57 0c-.982 0-1.777-.733-1.777-1.635 0-.901.795-1.634 1.777-1.634.982 0 1.777.733 1.777 1.634 0 .902-.795 1.635-1.777 1.635"/></svg>
+};
 
 export default function LandingPage() {
   const icons: { [key: string]: React.ReactNode } = {
@@ -54,6 +61,18 @@ export default function LandingPage() {
     "Bitcoin.com",
     "Metamask",
   ];
+
+  const renderBadge = (badge: string | undefined) => {
+    if (!badge) return null;
+    const badgeStyles = badge === "NEW" 
+      ? "bg-green-400/20 text-green-400 border border-green-400/30" 
+      : "bg-pink-400/20 text-pink-400 border border-pink-400/30";
+    return (
+      <span className={cn("ml-2 px-1.5 py-0.5 text-[10px] font-semibold rounded", badgeStyles)}>
+        {badge}
+      </span>
+    );
+  };
 
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
@@ -362,8 +381,53 @@ export default function LandingPage() {
         </section>
 
       </main>
-      <footer className="p-8 text-center text-sm text-muted-foreground border-t mt-20">
-        © {new Date().getFullYear()} CryptoSeed Wallet. For educational purposes only. Not for use with real funds.
+      <footer className="bg-background border-t mt-20 py-12 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
+            {content.footer.columns.map((column, index) => (
+              <div key={index} className={cn(index > 0 && "col-span-1", index === 0 && "col-span-2 md:col-span-1")}>
+                <h3 className="font-semibold uppercase tracking-wider text-muted-foreground mb-4 text-sm">{column.title}</h3>
+                <ul className="space-y-3">
+                  {column.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <Link href="#" className="text-foreground hover:text-primary transition-colors text-sm flex items-center">
+                        {link.text}
+                        {renderBadge(link.badge)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 border border-blue-400/30 bg-blue-950/50 rounded-md px-3 py-1.5 text-blue-300">
+                    <CheckCircle2 className="h-5 w-5" />
+                    <span className="font-semibold">SOC 2</span>
+                    <span className="text-blue-300/60">Type II Certified</span>
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
+                  {content.footer.legal.map((link, index) => (
+                    <Link key={index} href="#" className="hover:text-primary transition-colors">
+                      {link.text}
+                    </Link>
+                  ))}
+                </div>
+            </div>
+            <div className="flex items-center gap-4 text-muted-foreground">
+                {content.footer.social.map((social, index) => (
+                    <Link key={index} href="#" className="hover:text-primary transition-colors">
+                        {SocialIcons[social]}
+                    </Link>
+                ))}
+            </div>
+          </div>
+            <p className="text-center text-xs text-muted-foreground/50 mt-8">
+                © {new Date().getFullYear()} CryptoSeed Wallet. For educational purposes only. Not for use with real funds.
+            </p>
+        </div>
       </footer>
     </div>
   );

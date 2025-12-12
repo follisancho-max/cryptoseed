@@ -204,5 +204,77 @@
             "description": "Follow our Docs to fetch, stream, export and index blockchain data in minutes.",
             "link": "View Docs"
         }
+    },
+    "footer": {
+        "columns": [
+            {
+                "title": "Products",
+                "links": [
+                    { "text": "Cortex", "badge": "NEW" },
+                    { "text": "Streams API" },
+                    { "text": "Authentication" }
+                ]
+            },
+            {
+                "title": "Web3 Data",
+                "links": [
+                    { "text": "NFT API" },
+                    { "text": "Price API" },
+                    { "text": "Token API" },
+                    { "text": "Wallet API" },
+                    { "text": "Blockchain API" },
+                    { "text": "DeFi API" },
+                    { "text": "Token Search API", "badge": "NEW" }
+                ]
+            },
+            {
+                "title": "Solutions",
+                "links": [
+                    { "text": "Wallets" },
+                    { "text": "Crypto Tax" },
+                    { "text": "DeFi" },
+                    { "text": "Web3 AI Agents" },
+                    { "text": "Crypto Neobank" }
+                ]
+            },
+            {
+                "title": "Chains",
+                "links": [
+                    { "text": "Ethereum" },
+                    { "text": "Base", "badge": "HOT" },
+                    { "text": "Solana" },
+                    { "text": "BNB Smart Chain" },
+                    { "text": "Polygon" },
+                    { "text": "Avalanche" },
+                    { "text": "Chiliz" },
+                    { "text": "Gnosis" },
+                    { "text": "Cronos" },
+                    { "text": "Fantom" },
+                    { "text": "Arbitrum" },
+                    { "text": "Optimism" },
+                    { "text": "Linea" },
+                    { "text": "Moonbeam" },
+                    { "text": "Flow" },
+                    { "text": "Lisk" },
+                    { "text": "Ronin" },
+                    { "text": "PulseChain" },
+                    { "text": "opBNB" },
+                    { "text": "zkSync" },
+                    { "text": "Polygon zkEVM" },
+                    { "text": "Zetachain" },
+                    { "text": "Blast" },
+                    { "text": "Mantle" }
+                ]
+            }
+        ],
+        "legal": [
+            { "text": "Privacy Policy" },
+            { "text": "Terms" },
+            { "text": "Cookie Policy" },
+            { "text": "Security Policy" }
+        ],
+        "social": [
+            "Youtube", "X", "LinkedIn", "Discord"
+        ]
     }
 }
