@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Menu, LayoutDashboard, Wallet, Shield } from 'lucide-react';
+import { Menu, LayoutDashboard, Wallet } from 'lucide-react';
 import { Logo } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
@@ -61,6 +63,9 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+              </SheetHeader>
               <Link
                 href="/"
                 className="flex items-center"
