@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar";
 import { Logo } from "@/components/icons";
 import Link from "next/link";
-import { LayoutDashboard, Wallet } from "lucide-react";
+import { LayoutDashboard, Wallet, Shield } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "CryptoSeed Wallet",
@@ -61,6 +61,14 @@ export default function RootLayout({
                     <Link href="/wallet">
                       <Wallet />
                       <span>Wallet</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Admin">
+                    <Link href="/admin">
+                      <Shield />
+                      <span>Admin</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
