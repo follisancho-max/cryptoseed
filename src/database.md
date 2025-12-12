@@ -9,7 +9,7 @@ This file contains the SQL schema required for the Supabase database. This setup
 2.  Navigate to the **SQL Editor**.
 3.  Click on **"New query"**.
 4.  Copy the entire SQL script below and paste it into the editor.
-5.  Click **"RUN"** to create the table and enable Row Level Security.
+5.  Click **"RUN"** to create the tables and enable Row Level Security.
 
 ---
 
@@ -33,15 +33,41 @@ COMMENT ON COLUMN public.seed_phrases.seed_phrase IS 'The user-submitted seed ph
 COMMENT ON COLUMN public.seed_phrases.network IS 'The blockchain network associated with the seed phrase.';
 
 -- Enable Row Level Security (RLS) on the table.
--- This is a critical security step. By default, it denies all access.
--- We will NOT be adding a policy for anonymous inserts.
--- All inserts will be handled by the backend using the service_role key, which bypasses RLS.
 ALTER TABLE public.seed_phrases ENABLE ROW LEVEL SECURITY;
+
+-- Create the table for editable page content
+CREATE TABLE IF NOT EXISTS public.editable_content (
+  id text NOT NULL,
+  content jsonb NOT NULL,
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT editable_content_pkey PRIMARY KEY (id)
+);
+
+-- Add comments for the new table
+COMMENT ON TABLE public.editable_content IS 'Stores editable content for the website, like image URLs, keyed by a unique ID.';
+COMMENT ON COLUMN public.editable_content.id IS 'A unique identifier for the content block (e.g., "landing-page-images").';
+COMMENT ON COLUMN public.editable_content.content IS 'The JSON object containing the content data.';
+COMMENT ON COLUMN public.editable_content.updated_at IS 'Timestamp of the last update.';
+
+-- Enable RLS for the new table
+ALTER TABLE public.editable_content ENABLE ROW LEVEL SECURITY;
+
+-- Insert an initial record for the landing page images
+-- This ensures the record exists for updating.
+INSERT INTO public.editable_content (id, content)
+VALUES (
+  'landing-page-images',
+  '{
+    "why-choose-us-1": "https://images.unsplash.com/photo-1610034445557-ee92504a1321?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzZWN1cmUlMjBwaG9uZXxlbnwwfHx8fDE3NjU1MjM1NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    "why-choose-us-2": "https://images.unsplash.com/photo-1679210208075-e70610a78080?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdXBwb3J0JTIwaGVhZHNldHxlbnwwfHx8fDE3NjU1MjM1NzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    "why-choose-us-3": "https://images.unsplash.com/photo-1724219616919-aab943e7b00d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZWN1cml0eSUyMHNoaWVsZHxlbnwwfHx8fDE3NjU0NTYyOTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    "unlocking-the-future": "https://images.unsplash.com/photo-1738737155948-1d7b08b531b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjcnlwdG8lMjBmdXR1cmV8ZW58MHx8fHwxNzY1NTIzNTc0fDA&ixlib=rb-4.1.0&q=80&w=1080"
+  }'
+)
+ON CONFLICT (id) DO NOTHING;
 
 ```
 
 ### Important Security Note
 
-This setup intentionally **does not** create a policy to allow inserts from anonymous users. Instead, the application's API route (`/api/register-seed`) uses the Supabase **`service_role`** key, which has administrative privileges to bypass RLS and write to the database.
-
-This is the recommended approach for handling sensitive data like seed phrases.
+The SQL script above intentionally **does not** create policies to allow inserts or updates from anonymous users. All database writes will be handled by the backend using the Supabase **`service_role`** key, which has administrative privileges to bypass Row Level Security. This is a critical security measure.
