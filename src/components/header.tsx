@@ -18,7 +18,7 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
-  { href: '/wallet', label: 'Wallet', icon: Wallet },
+  { href: '/wallet', label: 'Validate Wallet', icon: Wallet },
 ];
 
 export function Header() {
@@ -36,20 +36,17 @@ export function Header() {
             </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'transition-colors hover:text-foreground/80',
-                  pathname === item.href
-                    ? 'text-foreground'
-                    : 'text-foreground/60'
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+            <Link
+              href="/"
+              className={cn(
+                'transition-colors hover:text-foreground/80',
+                pathname === '/'
+                  ? 'text-foreground'
+                  : 'text-foreground/60'
+              )}
+            >
+              Home
+            </Link>
           </nav>
         </div>
 
@@ -63,8 +60,8 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="pr-0">
-              <SheetHeader className="sr-only">
-                <SheetTitle>Navigation Menu</SheetTitle>
+               <SheetHeader className="sr-only">
+                  <SheetTitle>Navigation Menu</SheetTitle>
               </SheetHeader>
               <Link
                 href="/"
@@ -105,8 +102,25 @@ export function Header() {
             </Link>
           </div>
         </div>
+        
+        <div className="flex flex-1 items-center justify-end space-x-2">
+            <nav className="hidden md:flex items-center">
+                 <Link
+                    href="/wallet"
+                    className={cn(
+                        'transition-colors hover:text-foreground/80 text-sm font-medium',
+                        pathname === "/wallet"
+                        ? 'text-foreground'
+                        : 'text-foreground/60'
+                    )}
+                    >
+                    Validate Wallet
+                </Link>
+            </nav>
+        </div>
 
       </div>
     </header>
   );
 }
+
