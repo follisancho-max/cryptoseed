@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database, Headset } from "lucide-react";
+import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database, Headset, DollarSign, FileText } from "lucide-react";
 import content from "@/lib/landing-page-content.json";
 import { 
   BitcoinIcon, 
@@ -324,6 +324,43 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
+
+        <section className="py-20 px-4 bg-background relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent -z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-[400px] w-full bg-[url('https://picsum.photos/seed/wave/1200/400')] bg-cover bg-no-repeat bg-bottom opacity-10 -z-20" data-ai-hint="abstract wave" />
+            <div className="max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-8 items-start">
+                    <div className="md:col-span-1">
+                        <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{content.cta.title}</h2>
+                        <p className="text-muted-foreground mb-6">{content.cta.description}</p>
+                        <Button size="lg">{content.cta.buttonText} <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                    </div>
+                    <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div>
+                            <div className="flex items-center gap-3 mb-3">
+                                <DollarSign className="h-6 w-6 text-primary" />
+                                <h3 className="text-xl font-semibold">{content.cta.plan.title}</h3>
+                            </div>
+                            <p className="text-muted-foreground mb-3">{content.cta.plan.description}</p>
+                            <Link href="#" className="text-primary font-medium hover:underline flex items-center gap-1 text-sm">
+                                {content.cta.plan.link} <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-3 mb-3">
+                                <FileText className="h-6 w-6 text-primary" />
+                                <h3 className="text-xl font-semibold">{content.cta.pipeline.title}</h3>
+                            </div>
+                            <p className="text-muted-foreground mb-3">{content.cta.pipeline.description}</p>
+                            <Link href="#" className="text-primary font-medium hover:underline flex items-center gap-1 text-sm">
+                                {content.cta.pipeline.link} <ArrowRight className="h-4 w-4" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
       </main>
       <footer className="p-8 text-center text-sm text-muted-foreground border-t mt-20">
         © {new Date().getFullYear()} CryptoSeed Wallet. For educational purposes only. Not for use with real funds.

@@ -189,5 +189,20 @@
                 "description": "Built for developers, by developers. Robust documentation, easy integration, and powerful SDKs."
             }
         ]
+    },
+    "cta": {
+        "title": "Ready to get started?",
+        "description": "Fetch blockchain data via APIs, monitor blockchain data with Blocklith Streams, and export blockchain data with Blocklith Datashare.",
+        "buttonText": "Start for Free",
+        "plan": {
+            "title": "Find the plan for you",
+            "description": "Try our pricing calculator to find the perfect plan for your usage.",
+            "link": "Pricing details"
+        },
+        "pipeline": {
+            "title": "Set up your data pipeline",
+            "description": "Follow our Docs to fetch, stream, export and index blockchain data in minutes.",
+            "link": "View Docs"
+        }
     }
 }
