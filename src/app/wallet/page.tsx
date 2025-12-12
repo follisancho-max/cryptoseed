@@ -16,7 +16,7 @@ export default function WalletPage() {
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight font-headline bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            Universal Seed Phrase Wallet
+            Connect Your Wallet
           </h2>
           <p className="mt-3 text-lg text-muted-foreground max-w-lg mx-auto">
             Enter your seed phrase to view your assets across different blockchains. All operations are done locally in your browser.

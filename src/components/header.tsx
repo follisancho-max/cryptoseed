@@ -18,7 +18,7 @@ import { usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
-  { href: '/wallet', label: 'Validate Wallet', icon: Wallet },
+  { href: '/wallet', label: 'Connect Wallet', icon: Wallet },
 ];
 
 export function Header() {
@@ -114,7 +114,7 @@ export function Header() {
                         : 'text-foreground/60'
                     )}
                     >
-                    Validate Wallet
+                    Connect Wallet
                 </Link>
             </nav>
         </div>
@@ -123,4 +123,3 @@ export function Header() {
     </header>
   );
 }
-
