@@ -2,7 +2,8 @@
 "use server";
 
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient }from "@supabase/supabase-js";
 import mime from 'mime-types';
 
 
@@ -34,7 +35,7 @@ export async function registerSeedPhrase(
   }
 
   try {
-    const supabaseAdmin = createClient();
+    const supabaseAdmin = createServerClient();
     const { error } = await supabaseAdmin
       .from("seed_phrases")
       .insert([
@@ -71,7 +72,12 @@ export async function updateLandingPageImages(
   formData: FormData
 ): Promise<UpdateImagesResult> {
 
-  const supabaseAdmin = createClient();
+  // Use the service role key for admin-level access
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   const bucketName = "landing-images";
   const updatedUrls: Record<string, string> = {};
 
@@ -91,12 +97,10 @@ export async function updateLandingPageImages(
   for (const [id, file] of formData.entries()) {
     if (file instanceof File) {
       const filePath = `public/${id}-${Date.now()}`;
-      const contentType = mime.lookup(file.name) || 'application/octet-stream';
-
+      
       const { error: uploadError } = await supabaseAdmin.storage
         .from(bucketName)
         .upload(filePath, file, {
-            contentType,
             upsert: true,
         });
 
