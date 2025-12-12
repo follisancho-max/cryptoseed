@@ -16,6 +16,7 @@ import {
   PolkadotIcon,
   ChainlinkIcon
 } from "@/components/icons";
+import Image from "next/image";
 
 export default function LandingPage() {
   const icons: { [key: string]: React.ReactNode } = {
@@ -25,15 +26,15 @@ export default function LandingPage() {
   };
 
   const chainIcons = [
-    <BitcoinIcon className="w-8 h-8" />,
-    <EthereumIcon className="w-8 h-8" />,
-    <SolanaIcon className="w-8 h-8" />,
-    <PolygonIcon className="w-8 h-8" />,
-    <AvalancheIcon className="w-8 h-8" />,
-    <BnbIcon className="w-8 h-8" />,
-    <CardanoIcon className="w-8 h-8" />,
-    <PolkadotIcon className="w-8 h-8" />,
-    <ChainlinkIcon className="w-8 h-8" />
+    <BitcoinIcon key="btc" className="w-8 h-8" />,
+    <EthereumIcon key="eth" className="w-8 h-8" />,
+    <SolanaIcon key="sol" className="w-8 h-8" />,
+    <PolygonIcon key="matic" className="w-8 h-8" />,
+    <AvalancheIcon key="avax" className="w-8 h-8" />,
+    <BnbIcon key="bnb" className="w-8 h-8" />,
+    <CardanoIcon key="ada" className="w-8 h-8" />,
+    <PolkadotIcon key="dot" className="w-8 h-8" />,
+    <ChainlinkIcon key="link" className="w-8 h-8" />
   ]
 
   const partnerLogos = [
@@ -42,6 +43,12 @@ export default function LandingPage() {
     "Blockaid",
     "Bitcoin.com",
     "Metamask",
+  ];
+  
+  const productUsedByLogos = [
+    "METAMASK",
+    "LEDGER",
+    "Blockchain.com"
   ];
 
   return (
@@ -87,12 +94,57 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
+
+        <section className="py-20 px-4">
+            <div className="max-w-6xl mx-auto">
+                <div className="flex justify-between items-center mb-12">
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{content.products.title}</h2>
+                    <Link href="#" className="text-primary font-medium hover:underline flex items-center gap-1">
+                        {content.products.link} <ArrowRight className="h-4 w-4" />
+                    </Link>
+                </div>
+
+                <div className="rounded-2xl bg-card/30 border border-border overflow-hidden">
+                    <div className="grid md:grid-cols-2">
+                        <div className="p-8 md:p-12 flex flex-col justify-center">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="text-xs font-semibold tracking-wider uppercase text-primary bg-primary/10 px-2 py-1 rounded-full">{content.products.card.tag}</span>
+                            </div>
+                            <h3 className="text-3xl font-bold mb-4">{content.products.card.title}</h3>
+                            <p className="text-muted-foreground mb-6">{content.products.card.description}</p>
+                            
+                            <p className="text-sm text-muted-foreground mb-4">{content.products.card.usedBy}</p>
+                            <div className="flex items-center gap-8 mb-8 text-muted-foreground">
+                                {productUsedByLogos.map((logo, index) => (
+                                    <div key={index} className="text-lg font-bold grayscale hover:grayscale-0 transition-all">{logo}</div>
+                                ))}
+                            </div>
+                            
+                            <Button asChild size="lg" className="self-start">
+                                <Link href="#">{content.products.card.cta}</Link>
+                            </Button>
+                        </div>
+                        <div className="relative min-h-[300px] md:min-h-0">
+                            <Image 
+                                src="https://picsum.photos/seed/wallet-ui/600/500" 
+                                alt="Crypto wallet interface" 
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                data-ai-hint="crypto wallet"
+                                className="scale-110 translate-x-10 -translate-y-5"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         
         <section className="bg-card/50 py-20 px-4 mt-20">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{content.features.title}</h2>
                     <p className="mt-3 text-lg text-muted-foreground">{content.features.subtitle}</p>
+
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
                     {content.features.items.map((item, index) => (

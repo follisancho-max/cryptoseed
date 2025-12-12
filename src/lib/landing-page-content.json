@@ -24,6 +24,17 @@
     "trusted": {
         "title": "Powering The Best Blockchain Projects"
     },
+    "products": {
+        "title": "Our Products",
+        "link": "All Data APIs",
+        "card": {
+            "tag": "API DATA API",
+            "title": "Fetch Crypto Data",
+            "description": "Instant access to multichain blockchain data for wallets, tokens, NFTs, DeFi protocols, and more - all through one fast, reliable API.",
+            "usedBy": "Used By",
+            "cta": "Get API Key"
+        }
+    },
     "features": {
         "title": "Why Choose CryptoSeed?",
         "subtitle": "A secure, simple, and powerful way to interact with blockchain data.",
