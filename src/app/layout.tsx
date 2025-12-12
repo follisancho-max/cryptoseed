@@ -7,7 +7,6 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Logo } from "@/components/icons";
 import Link from "next/link";
 import { LayoutDashboard, Wallet } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "CryptoSeed Wallet",
@@ -69,14 +68,7 @@ export default function RootLayout({
             </SidebarContent>
           </Sidebar>
           <SidebarInset>
-            <header className="flex items-center justify-between p-2 border-b">
-                <SidebarTrigger />
-                <h1 className="text-xl font-semibold tracking-tight">
-                    CryptoSeed Wallet
-                </h1>
-                <div className="w-7 h-7" />
-            </header>
-            <main className="flex-1 p-4 md:p-6">
+            <main className="flex-1">
                 {children}
             </main>
           </SidebarInset>

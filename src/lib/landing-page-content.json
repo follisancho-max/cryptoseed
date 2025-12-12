@@ -1,18 +1,21 @@
 
 {
     "hero": {
-        "title": "One Phrase to Rule Them All",
-        "subtitle": "Securely view all your crypto assets from a single seed phrase. Our platform supports multiple blockchains and keeps your data private by processing everything in your browser.",
-        "cta": "View Your Wallet Instantly"
+        "title": "Fetch Blockchain Data",
+        "subtitle": "An essential tool for developers, analysts, and investors, providing a unified solution for accessing complex blockchain data. We handle the complexity so you can focus on building.",
+        "cta": "Get Started"
+    },
+    "trusted": {
+        "title": "Supporting the biggest chains in Web3"
     },
     "features": {
-        "title": "Why Choose CryptoSeed Wallet?",
-        "subtitle": "A secure and simple way to manage your crypto portfolio.",
+        "title": "Why Choose CryptoSeed?",
+        "subtitle": "A secure, simple, and powerful way to interact with blockchain data.",
         "items": [
             {
                 "icon": "Wallet",
-                "title": "Universal Wallet",
-                "description": "No more switching apps. View assets from Ethereum, Bitcoin, Solana, and many more networks all in one place."
+                "title": "Unified API",
+                "description": "One API for all your blockchain data needs. Access wallets, tokens, NFTs, and transactions across multiple chains."
             },
             {
                 "icon": "ShieldCheck",
@@ -20,9 +23,9 @@
                 "description": "Your seed phrase is your key. It's processed only in your browser and is never sent to our servers. Ever."
             },
             {
-                "icon": "Zap",
-                "title": "Instant & Simple",
-                "description": "Just enter your seed phrase and instantly see your portfolio. No sign-ups, no lengthy setups."
+                "icon": "Code",
+                "title": "Developer Focused",
+                "description": "Built for developers, by developers. Robust documentation, easy integration, and powerful SDKs."
             }
         ]
     }
