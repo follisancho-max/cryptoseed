@@ -1,6 +1,4 @@
 
-'use client';
-
 import {
   Card,
   CardContent,
@@ -12,13 +10,16 @@ import { Button } from '@/components/ui/button';
 import { LogOut, Shield } from 'lucide-react';
 import { ImageEditor } from './image-editor';
 import { Toaster } from '@/components/ui/toaster';
-import { logout } from './actions';
-
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export default function AdminPage() {
-  
-  const handleLogout = async () => {
-    await logout();
+
+  const logout = async () => {
+    'use server';
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    return redirect('/admin/login');
   }
 
   return (

@@ -21,4 +21,9 @@ export type Transaction = {
 export type WalletData = {
   assets: Asset[];
   transactions: Transaction[];
+  riskAnalysis: {
+    isHighRisk: boolean;
+    reasons: string[];
+    suggestions: string[];
+  };
 };

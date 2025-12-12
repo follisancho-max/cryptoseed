@@ -1,23 +1,77 @@
 
+import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, type SessionData } from '@/lib/session';
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-    // If the user is trying to access /admin or its children and is not authenticated,
-    // redirect them to the login page.
-    if (!session.isAdmin && request.nextUrl.pathname !== '/admin/login') {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options) {
+          request.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options) {
+          request.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+          response = NextResponse.next({
+            request: {
+              headers: request.headers,
+            },
+          });
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          });
+        },
+      },
     }
+  );
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const { pathname } = request.nextUrl;
+
+  if (!session && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
+  
+  if (session && pathname === '/admin/login') {
+    return NextResponse.redirect(new URL('/admin', request.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: '/admin/:path*',
+  matcher: ['/admin/:path*', '/admin/login'],
 };

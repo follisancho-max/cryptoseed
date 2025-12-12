@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from "zod";
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 import mime from 'mime-types';
 
 
@@ -33,22 +33,8 @@ export async function registerSeedPhrase(
     };
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    let missingVars = [];
-    if (!supabaseUrl) missingVars.push("SUPABASE_URL");
-    if (!supabaseServiceRoleKey) missingVars.push("SUPABASE_SERVICE_ROLE_KEY");
-    console.error(`Supabase server-side environment variables are not set: ${missingVars.join(", ")}`);
-    return {
-      success: false,
-      error: "Server configuration error. Required environment variables are not set.",
-    };
-  }
-
   try {
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const supabaseAdmin = createClient();
     const { error } = await supabaseAdmin
       .from("seed_phrases")
       .insert([
@@ -84,23 +70,18 @@ type UpdateImagesResult = {
 export async function updateLandingPageImages(
   formData: FormData
 ): Promise<UpdateImagesResult> {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    return { success: false, error: "Server configuration error." };
-  }
-
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+  const supabaseAdmin = createClient();
   const bucketName = "landing-images";
 
   // Ensure the bucket exists
   try {
     const { data: bucket, error: bucketError } = await supabaseAdmin.storage.getBucket(bucketName);
-    if (bucketError && bucketError.message === 'Bucket not found') {
+    if (bucketError && bucketError.message.includes('not found')) { // More robust check
        const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, {
         public: true,
         allowedMimeTypes: ["image/*"],
+        // upsert: true is not a valid option for createBucket
       });
       if (createError) {
         console.error("Supabase create bucket error:", createError);
