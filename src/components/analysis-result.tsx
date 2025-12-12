@@ -1,6 +1,7 @@
+
 "use client";
 
-import type { WalletData, Asset } from "@/lib/types";
+import type { WalletData } from "@/lib/types";
 import {
   Card,
   CardContent,

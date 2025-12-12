@@ -16,7 +16,6 @@ import { Logo } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { WalletConnectDialog } from './wallet-connect-dialog';
-import { Dialog, DialogTrigger } from './ui/dialog';
 
 const navItems = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
@@ -119,14 +118,7 @@ export function Header() {
         </div>
         
         <div className="flex flex-1 items-center justify-end space-x-2">
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  Connect Wallet
-                </Button>
-              </DialogTrigger>
-              <WalletConnectDialog onConnect={() => setIsDialogOpen(false)} />
-            </Dialog>
+            <WalletConnectDialog onConnect={() => setIsDialogOpen(false)} />
         </div>
 
       </div>
