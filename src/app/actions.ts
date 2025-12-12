@@ -92,6 +92,29 @@ export async function updateLandingPageImages(
   }
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+  const bucketName = "landing-images";
+
+  // Ensure the bucket exists
+  try {
+    const { data: bucket, error: bucketError } = await supabaseAdmin.storage.getBucket(bucketName);
+    if (bucketError && bucketError.message === 'Bucket not found') {
+       const { error: createError } = await supabaseAdmin.storage.createBucket(bucketName, {
+        public: true,
+        allowedMimeTypes: ["image/*"],
+      });
+      if (createError) {
+        console.error("Supabase create bucket error:", createError);
+        return { success: false, error: `Failed to create storage bucket: ${createError.message}` };
+      }
+    } else if (bucketError) {
+        console.error("Supabase get bucket error:", bucketError);
+        return { success: false, error: `Failed to access storage bucket: ${bucketError.message}` };
+    }
+  } catch (err: any) {
+     console.error("Unexpected error checking bucket:", err);
+     return { success: false, error: "An unexpected server error occurred while checking storage." };
+  }
+
 
   const updatedUrls: Record<string, string> = {};
 
@@ -114,7 +137,7 @@ export async function updateLandingPageImages(
       const contentType = mime.lookup(file.name) || 'application/octet-stream';
 
       const { error: uploadError } = await supabaseAdmin.storage
-        .from("landing-images")
+        .from(bucketName)
         .upload(filePath, file, {
             contentType,
             upsert: true,
@@ -126,7 +149,7 @@ export async function updateLandingPageImages(
       }
 
       const { data: publicUrlData } = supabaseAdmin.storage
-        .from("landing-images")
+        .from(bucketName)
         .getPublicUrl(filePath);
 
       if (publicUrlData) {
