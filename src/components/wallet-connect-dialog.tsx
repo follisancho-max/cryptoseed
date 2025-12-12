@@ -44,6 +44,7 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
     const [view, setView] = useState<'grid' | 'initializing' | 'form'>('grid');
     const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         if (view === 'initializing') {
@@ -68,6 +69,13 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
     const closeAndReset = () => {
         setIsDialogOpen(false);
         setTimeout(reset, 300);
+    }
+
+    const handleConnect = () => {
+        onConnect();
+        closeAndReset();
+        // This will now navigate to the /wallet page.
+        router.push('/wallet');
     }
     
     return (
@@ -171,8 +179,19 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                                      </div>
                                       <Input placeholder="Type the number shown above" />
                                 </TabsContent>
-                                 <TabsContent value="keystore" className="pt-4 text-center text-muted-foreground">
-                                    <p>Keystore JSON import is not implemented yet.</p>
+                                <TabsContent value="keystore" className="pt-4 space-y-4">
+                                     <Textarea placeholder="Enter your keystore JSON" className="min-h-[100px]" />
+                                     <Input type="password" placeholder="Wallet password" />
+                                     <Input placeholder="Wallet name" />
+                                     <div className="flex items-center gap-4">
+                                         <div className="flex-1 p-2 rounded-md bg-muted text-center tracking-[0.5em] text-lg font-bold select-none">
+                                            5 5 3 4 0
+                                         </div>
+                                         <Button variant="ghost" size="icon">
+                                            <RefreshCw className="h-5 w-5" />
+                                         </Button>
+                                     </div>
+                                      <Input placeholder="Type the number shown above" />
                                 </TabsContent>
                                  <TabsContent value="private" className="pt-4 text-center text-muted-foreground">
                                     <p>Private Key import is not implemented yet.</p>
@@ -185,7 +204,7 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                                     Close
                                 </Button>
                             </DialogClose>
-                            <Button type="button" onClick={() => { onConnect(); closeAndReset(); }} className="bg-blue-600 hover:bg-blue-700 text-white">
+                            <Button type="button" onClick={handleConnect} className="bg-blue-600 hover:bg-blue-700 text-white">
                                 Connect
                             </Button>
                         </DialogFooter>
