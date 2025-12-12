@@ -15,14 +15,16 @@ import { Menu, LayoutDashboard, Wallet } from 'lucide-react';
 import { Logo } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { WalletConnectDialog } from './wallet-connect-dialog';
+import { Dialog, DialogTrigger } from './ui/dialog';
 
 const navItems = [
   { href: '/', label: 'Home', icon: LayoutDashboard },
-  { href: '/wallet', label: 'Connect Wallet', icon: Wallet },
 ];
 
 export function Header() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const pathname = usePathname();
 
   return (
@@ -87,6 +89,19 @@ export function Header() {
                         <span>{item.label}</span>
                       </Link>
                     ))}
+                    <button
+                        onClick={() => {
+                          setIsSheetOpen(false);
+                          setIsDialogOpen(true);
+                        }}
+                        className={cn(
+                            'flex items-center gap-2 rounded-md p-2 text-sm font-medium hover:bg-accent',
+                             pathname === '/wallet' ? 'bg-accent' : 'transparent'
+                        )}
+                      >
+                        <Wallet className="h-4 w-4" />
+                        <span>Connect Wallet</span>
+                      </button>
                 </div>
               </div>
             </SheetContent>
@@ -104,19 +119,14 @@ export function Header() {
         </div>
         
         <div className="flex flex-1 items-center justify-end space-x-2">
-            <nav className="hidden md:flex items-center">
-                 <Link
-                    href="/wallet"
-                    className={cn(
-                        'transition-colors hover:text-foreground/80 text-sm font-medium',
-                        pathname === "/wallet"
-                        ? 'text-foreground'
-                        : 'text-foreground/60'
-                    )}
-                    >
-                    Connect Wallet
-                </Link>
-            </nav>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  Connect Wallet
+                </Button>
+              </DialogTrigger>
+              <WalletConnectDialog onConnect={() => setIsDialogOpen(false)} />
+            </Dialog>
         </div>
 
       </div>
