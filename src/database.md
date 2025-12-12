@@ -66,6 +66,13 @@ VALUES (
 )
 ON CONFLICT (id) DO NOTHING;
 
+-- Allow public read access to the editable_content table
+-- This policy allows anyone to read the content, which is necessary for the landing page.
+CREATE POLICY "Public read access for editable content"
+ON public.editable_content FOR SELECT
+TO public
+USING (true);
+
 ```
 
 ### Important Security Note
