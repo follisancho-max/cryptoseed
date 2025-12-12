@@ -37,7 +37,7 @@ export default function RootLayout({
           <Sidebar>
             <SidebarHeader>
               <div className="flex items-center gap-2 p-2">
-                 <SidebarTrigger className="md:hidden" />
+                 <SidebarTrigger />
                  <Link href="/" className="flex items-center gap-2 font-bold text-lg text-primary">
                   <Logo className="w-7 h-7" />
                   <span className="group-data-[collapsible=icon]:hidden">
