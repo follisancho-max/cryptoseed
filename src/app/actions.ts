@@ -3,7 +3,6 @@
 
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
-import type { Asset, Transaction, WalletData } from "@/lib/types";
 import mime from 'mime-types';
 
 
