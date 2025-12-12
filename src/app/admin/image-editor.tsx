@@ -1,9 +1,9 @@
 
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { PlaceHolderImages, type ImagePlaceholder } from '@/lib/placeholder-images';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { updateLandingPageImages } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@supabase/supabase-js';
 
-// We will manage these specific image IDs from the admin panel
 const editableImageIds = [
   'why-choose-us-1',
   'why-choose-us-2',
@@ -32,17 +32,50 @@ const initialImages = PlaceHolderImages.filter(p => editableImageIds.includes(p.
 
 export function ImageEditor() {
   const { toast } = useToast();
-  const [images, setImages] = useState<EditableImage[]>(
-    initialImages.map(img => ({
-      id: img.id,
-      currentUrl: img.imageUrl,
-      description: img.description,
-      file: null,
-      previewUrl: null,
-    }))
-  );
+  const [images, setImages] = useState<EditableImage[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  useEffect(() => {
+    async function fetchInitialImages() {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        console.error("Supabase keys not found. Using local placeholders.");
+        setImages(initialImages.map(img => ({
+          id: img.id,
+          currentUrl: img.imageUrl,
+          description: img.description,
+          file: null,
+          previewUrl: null,
+        })));
+        setIsLoading(false);
+        return;
+      }
+
+      const supabase = createClient(supabaseUrl, supabaseAnonKey);
+      const { data, error } = await supabase
+        .from('editable_content')
+        .select('content')
+        .eq('id', 'landing-page-images')
+        .single();
+      
+      const remoteUrls = data?.content as Record<string, string> | undefined;
+
+      setImages(initialImages.map(img => ({
+        id: img.id,
+        currentUrl: remoteUrls?.[img.id] || img.imageUrl,
+        description: img.description,
+        file: null,
+        previewUrl: null,
+      })));
+      setIsLoading(false);
+    }
+
+    fetchInitialImages();
+  }, []);
 
   const handleFileChange = (id: string, file: File | null) => {
     setImages(currentImages =>
@@ -118,6 +151,19 @@ export function ImageEditor() {
 
     setIsSubmitting(false);
   };
+
+  if (isLoading) {
+    return (
+      <Card className="border-primary/10">
+        <CardHeader>
+          <CardTitle>Edit Landing Page Images</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center items-center h-64">
+           <Loader2 className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card className="border-primary/10">

@@ -18,4 +18,7 @@ export type Transaction = {
   to: string;
 };
 
-export type WalletData
+export type WalletData = {
+  assets: Asset[];
+  transactions: Transaction[];
+};

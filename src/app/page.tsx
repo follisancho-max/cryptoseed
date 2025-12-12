@@ -1,36 +1,73 @@
 
-'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { createClient } from '@supabase/supabase-js';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+import { Logo } from '@/components/icons';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Wallet } from "lucide-react";
-import { Logo } from "@/components/icons";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+async function getLandingPageImages() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const whyChooseUsFeatures = [
-  {
-    title: "User-Friendly Platform",
-    description: "Built with you in mind, our intuitive platform makes navigating and solving issues straightforward and stress-free.",
-    image: PlaceHolderImages.find(p => p.id === "why-choose-us-1"),
-  },
-  {
-    title: "24/7 Support",
-    description: "Our dedicated team is always available, around the clock, to provide you with expert assistance whenever you need it.",
-    image: PlaceHolderImages.find(p => p.id === "why-choose-us-2"),
-  },
-  {
-    title: "Trusted & Secure",
-    description: "We prioritize your safety by offering a secure and reliable platform that you can trust for all your needs.",
-    image: PlaceHolderImages.find(p => p.id === "why-choose-us-3"),
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    console.error('Supabase environment variables are not set. Using placeholder images.');
+    return null;
   }
-]
 
-const unlockingTheFutureImage = PlaceHolderImages.find(p => p.id === "unlocking-the-future");
+  try {
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const { data, error } = await supabaseAdmin
+      .from('editable_content')
+      .select('content')
+      .eq('id', 'landing-page-images')
+      .single();
 
-export default function LandingPage() {
-  
+    if (error) {
+      console.error('Error fetching images from Supabase:', error.message);
+      return null;
+    }
+    return data.content as Record<string, string>;
+  } catch (error) {
+    console.error('Unexpected error fetching images:', error);
+    return null;
+  }
+}
+
+export default async function LandingPage() {
+  const dynamicImages = await getLandingPageImages();
+
+  const getImage = (id: string) => {
+    const placeholder = PlaceHolderImages.find(p => p.id === id);
+    return {
+      url: dynamicImages?.[id] || placeholder?.imageUrl || '',
+      alt: placeholder?.description || 'Feature image',
+      hint: placeholder?.imageHint || '',
+    };
+  };
+
+  const whyChooseUsFeatures = [
+    {
+      title: "User-Friendly Platform",
+      description: "Built with you in mind, our intuitive platform makes navigating and solving issues straightforward and stress-free.",
+      image: getImage("why-choose-us-1"),
+    },
+    {
+      title: "24/7 Support",
+      description: "Our dedicated team is always available, around the clock, to provide you with expert assistance whenever you need it.",
+      image: getImage("why-choose-us-2"),
+    },
+    {
+      title: "Trusted & Secure",
+      description: "We prioritize your safety by offering a secure and reliable platform that you can trust for all your needs.",
+      image: getImage("why-choose-us-3"),
+    }
+  ];
+
+  const unlockingTheFutureImage = getImage("unlocking-the-future");
+
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <div className="absolute top-0 left-0 w-full h-screen bg-gradient-to-br from-background via-background/80 to-blue-900/20 -z-10" />
@@ -56,14 +93,14 @@ export default function LandingPage() {
             {whyChooseUsFeatures.map((feature) => (
               <Card key={feature.title} className="bg-card/50 border-primary/20 text-center">
                 <CardHeader>
-                  {feature.image && (
+                  {feature.image.url && (
                      <div className="relative h-40 w-full mb-4">
                         <Image
-                          src={feature.image.imageUrl}
-                          alt={feature.description}
+                          src={feature.image.url}
+                          alt={feature.image.alt}
                           fill
                           className="object-contain"
-                          data-ai-hint={feature.image.imageHint}
+                          data-ai-hint={feature.image.hint}
                         />
                       </div>
                   )}
@@ -80,13 +117,13 @@ export default function LandingPage() {
         <section className="w-full max-w-6xl mx-auto py-16 sm:py-24 px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="relative h-80 md:h-full w-full">
-              {unlockingTheFutureImage && (
+              {unlockingTheFutureImage.url && (
                 <Image
-                  src={unlockingTheFutureImage.imageUrl}
-                  alt={unlockingTheFutureImage.description}
+                  src={unlockingTheFutureImage.url}
+                  alt={unlockingTheFutureImage.alt}
                   fill
                   className="object-contain"
-                  data-ai-hint={unlockingTheFutureImage.imageHint}
+                  data-ai-hint={unlockingTheFutureImage.hint}
                 />
               )}
             </div>
