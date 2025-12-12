@@ -52,6 +52,7 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
         return (
              <DialogContent className="max-w-md">
                 <DialogHeader>
+                    <DialogTitle className="sr-only">Initializing Connection</DialogTitle>
                      <div className="flex items-center gap-2 text-green-400 font-semibold">
                         Initializing
                         <span className="animate-pulse-dot-1">.</span>
