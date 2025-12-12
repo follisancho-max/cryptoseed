@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database } from "lucide-react";
 import content from "@/lib/landing-page-content.json";
 import { 
   BitcoinIcon, 
@@ -17,12 +17,20 @@ import {
   ChainlinkIcon
 } from "@/components/icons";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function LandingPage() {
   const icons: { [key: string]: React.ReactNode } = {
     Wallet: <Wallet className="h-6 w-6" />,
     ShieldCheck: <ShieldCheck className="h-6 w-6" />,
     Code: <Code className="h-6 w-6" />,
+  };
+
+  const productIcons: { [key: string]: React.ReactNode } = {
+    "API": <Zap className="h-4 w-4" />,
+    "STREAMS": <Workflow className="h-4 w-4" />,
+    "DATASHARE": <Database className="h-4 w-4" />,
+    "DATA INDEXER": <Code className="h-4 w-4" />,
   };
 
   const chainIcons = [
@@ -43,12 +51,6 @@ export default function LandingPage() {
     "Blockaid",
     "Bitcoin.com",
     "Metamask",
-  ];
-  
-  const productUsedByLogos = [
-    "METAMASK",
-    "LEDGER",
-    "Blockchain.com"
   ];
 
   return (
@@ -104,37 +106,50 @@ export default function LandingPage() {
                     </Link>
                 </div>
 
-                <div className="rounded-2xl bg-card/30 border border-border overflow-hidden">
-                    <div className="grid md:grid-cols-2">
-                        <div className="p-8 md:p-12 flex flex-col justify-center">
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="text-xs font-semibold tracking-wider uppercase text-primary bg-primary/10 px-2 py-1 rounded-full">{content.products.card.tag}</span>
-                            </div>
-                            <h3 className="text-3xl font-bold mb-4">{content.products.card.title}</h3>
-                            <p className="text-muted-foreground mb-6">{content.products.card.description}</p>
-                            
-                            <p className="text-sm text-muted-foreground mb-4">{content.products.card.usedBy}</p>
-                            <div className="flex items-center gap-8 mb-8 text-muted-foreground">
-                                {productUsedByLogos.map((logo, index) => (
-                                    <div key={index} className="text-lg font-bold grayscale hover:grayscale-0 transition-all">{logo}</div>
-                                ))}
-                            </div>
-                            
-                            <Button asChild size="lg" className="self-start">
-                                <Link href="#">{content.products.card.cta}</Link>
-                            </Button>
-                        </div>
-                        <div className="relative min-h-[300px] md:min-h-0">
-                            <Image 
-                                src="https://picsum.photos/seed/wallet-ui/600/500" 
-                                alt="Crypto wallet interface" 
-                                fill
-                                style={{ objectFit: 'cover' }}
-                                data-ai-hint="crypto wallet"
-                                className="scale-110 translate-x-10 -translate-y-5"
-                            />
-                        </div>
+                <div className="grid grid-cols-1 gap-8">
+                  {content.products.cards.map((card, index) => (
+                    <div key={index} className={cn(
+                      "rounded-2xl border overflow-hidden",
+                      card.bgColorClass
+                    )}>
+                      <div className="grid md:grid-cols-2">
+                          <div className={cn(
+                            "p-8 md:p-12 flex flex-col justify-center",
+                            index % 2 !== 0 && "md:order-last"
+                          )}>
+                              <div className="flex items-center gap-2 mb-4">
+                                  <span className={cn("flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase px-2 py-1 rounded-full", card.tagColorClass)}>
+                                    {productIcons[card.tag] || <Zap className="h-4 w-4" />}
+                                    {card.tag}
+                                  </span>
+                              </div>
+                              <h3 className="text-3xl font-bold mb-4">{card.title}</h3>
+                              <p className="text-muted-foreground mb-6">{card.description}</p>
+                              
+                              <p className="text-sm text-muted-foreground mb-4">{card.usedByLabel}</p>
+                              <div className="flex items-center gap-8 mb-8 text-muted-foreground">
+                                  {card.logos.map((logo, index) => (
+                                      <div key={index} className="text-lg font-bold grayscale hover:grayscale-0 transition-all">{logo}</div>
+                                  ))}
+                              </div>
+                              
+                              <Button asChild size="lg" className="self-start">
+                                  <Link href="#">{card.cta}</Link>
+                              </Button>
+                          </div>
+                          <div className="relative min-h-[300px] md:min-h-0">
+                              <Image 
+                                  src={card.imageUrl}
+                                  alt={card.imageAlt}
+                                  fill
+                                  style={{ objectFit: 'cover' }}
+                                  data-ai-hint={card.imageHint}
+                                  className={cn("scale-110", card.imageClass)}
+                              />
+                          </div>
+                      </div>
                     </div>
+                  ))}
                 </div>
             </div>
         </section>
