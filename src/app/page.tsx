@@ -36,6 +36,14 @@ export default function LandingPage() {
     <ChainlinkIcon className="w-8 h-8" />
   ]
 
+  const partnerLogos = [
+    "Unstoppable Domains",
+    "Ledger",
+    "Blockaid",
+    "Bitcoin.com",
+    "Metamask",
+  ];
+
   return (
     <div className="flex flex-col min-h-dvh bg-background text-foreground">
       <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-br from-background to-blue-900/20 -z-10" />
@@ -51,16 +59,29 @@ export default function LandingPage() {
                 <Link href="/wallet">{content.hero.cta} <ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
         </section>
+        
+        <section className="py-20 px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-8 text-center">
+                {content.stats.items.map((stat, index) => (
+                  <div key={index}>
+                    <h3 className="text-4xl md:text-5xl font-bold">{stat.value}</h3>
+                    <p className="text-muted-foreground uppercase tracking-widest mt-2 text-sm">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+        </section>
 
         <section className="py-12 px-4">
             <div className="max-w-5xl mx-auto">
-                <p className="text-center text-sm font-semibold text-muted-foreground tracking-wider uppercase mb-8">
+                <p className="text-center text-sm font-semibold text-primary tracking-wider uppercase mb-8">
                   {content.trusted.title}
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-                    {chainIcons.map((Icon, index) => (
-                      <div key={index} className="text-muted-foreground hover:text-foreground transition-colors">
-                        {Icon}
+                <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-muted-foreground">
+                    {partnerLogos.map((logo, index) => (
+                      <div key={index} className="text-lg font-medium grayscale hover:grayscale-0 transition-all">
+                        {logo}
                       </div>
                     ))}
                 </div>

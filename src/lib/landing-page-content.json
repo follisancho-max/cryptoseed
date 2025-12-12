@@ -5,8 +5,24 @@
         "subtitle": "An essential tool for developers, analysts, and investors, providing a unified solution for accessing complex blockchain data. We handle the complexity so you can focus on building.",
         "cta": "Get Started"
     },
+    "stats": {
+        "items": [
+            {
+                "value": "50+ Million",
+                "label": "End Users Powered"
+            },
+            {
+                "value": "50+ Billion",
+                "label": "API Requests Served Per Month"
+            },
+            {
+                "value": "100% Lower",
+                "label": "Costs vs In-House"
+            }
+        ]
+    },
     "trusted": {
-        "title": "Supporting the biggest chains in Web3"
+        "title": "Powering The Best Blockchain Projects"
     },
     "features": {
         "title": "Why Choose CryptoSeed?",
