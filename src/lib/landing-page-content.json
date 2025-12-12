@@ -120,6 +120,55 @@
             "avatarUrl": "https://picsum.photos/seed/avatar3/40/40"
         }
     ],
+    "useCases": {
+        "title": "Use Cases",
+        "link": "More Use Cases",
+        "cards": [
+            {
+                "title": "Wallets",
+                "description": "Power wallets and portfolio trackers with real-time balances, transactions, NFTs, and prices across chains.",
+                "logos": ["METAMASK", "Ronin", "delta"],
+                "imageUrl": "https://picsum.photos/seed/usecase1/500/400",
+                "imageAlt": "Wallet UI on a phone",
+                "imageHint": "wallet app"
+            },
+            {
+                "title": "Crypto Tax",
+                "description": "Fetch decoded wallet histories, categorized transactions, and prices to automate crypto tax and compliance.",
+                "logos": ["recap", "Awaken", "cryptio"],
+                "imageUrl": "https://picsum.photos/seed/usecase2/500/400",
+                "imageAlt": "Crypto tax calculation UI",
+                "imageHint": "tax software"
+            },
+            {
+                "title": "DeFi & Analytics",
+                "description": "Track liquidity, positions, token prices, and flows in real time to power DeFi dashboards and trading analytics.",
+                "logos": ["cryptorank", "Gate", "aave"],
+                "imageUrl": "https://picsum.photos/seed/usecase3/500/400",
+                "imageAlt": "DeFi analytics dashboard",
+                "imageHint": "defi dashboard"
+            }
+        ]
+    },
+    "enterprise": {
+        "title": "Trusted by Enterprises. Proven at Scale",
+        "description": "Blocklith powers 100M+ end users and leading Web3 apps like MetaMask and Blockchain.com - serving billions of API requests every month. Backed by SOC 2 Type II-certified security, ISO 27001 compliance, and 24/7 expert support you can rely on.",
+        "features": [
+            {
+                "icon": "ShieldCheck",
+                "title": "Enterprise Security",
+                "description": "SOC 2 Type II and ISO27001 certified. Your data, protected at every layer."
+            },
+            {
+                "icon": "Headset",
+                "title": "Expert Support",
+                "description": "Work directly with blockchain data experts white-glove onboarding and 24/7 technical support available."
+            }
+        ],
+        "imageUrl": "https://picsum.photos/seed/enterprise1/600/600",
+        "imageAlt": "AICPA SOC certification logo surrounded by other partner logos",
+        "imageHint": "certification seal"
+    },
     "features": {
         "title": "Why Choose CryptoSeed?",
         "subtitle": "A secure, simple, and powerful way to interact with blockchain data.",

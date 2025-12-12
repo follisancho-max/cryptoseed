@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database } from "lucide-react";
+import { ArrowRight, Code, ShieldCheck, Wallet, Workflow, Zap, Database, Headset } from "lucide-react";
 import content from "@/lib/landing-page-content.json";
 import { 
   BitcoinIcon, 
@@ -25,6 +25,7 @@ export default function LandingPage() {
     Wallet: <Wallet className="h-6 w-6" />,
     ShieldCheck: <ShieldCheck className="h-6 w-6" />,
     Code: <Code className="h-6 w-6" />,
+    Headset: <Headset className="h-6 w-6" />,
   };
 
   const productIcons: { [key: string]: React.ReactNode } = {
@@ -233,13 +234,81 @@ export default function LandingPage() {
               </div>
           </div>
         </section>
-        
+
+        <section className="py-20 px-4 bg-background">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{content.useCases.title}</h2>
+              <Link href="#" className="text-primary font-medium hover:underline flex items-center justify-center gap-1 mt-2">
+                {content.useCases.link} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-8">
+              {content.useCases.cards.map((card, index) => (
+                <div key={index} className="bg-card/30 border border-border rounded-lg overflow-hidden">
+                  <div className="relative h-48">
+                    <Image
+                      src={card.imageUrl}
+                      alt={card.imageAlt}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      data-ai-hint={card.imageHint}
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-2">{card.title}</h3>
+                    <p className="text-muted-foreground mb-4">{card.description}</p>
+                    <div className="flex items-center gap-4 text-muted-foreground grayscale">
+                      {card.logos.map((logo, i) => (
+                        <div key={i} className="text-lg font-semibold">{logo}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{content.enterprise.title}</h2>
+                <p className="text-muted-foreground mb-8">{content.enterprise.description}</p>
+                <div className="space-y-6">
+                  {content.enterprise.features.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-4">
+                       <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 text-primary flex-shrink-0 mt-1">
+                          {icons[feature.icon] || <ShieldCheck className="h-6 w-6" />}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{feature.title}</h3>
+                        <p className="text-muted-foreground">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="relative flex items-center justify-center">
+                 <Image
+                    src={content.enterprise.imageUrl}
+                    alt={content.enterprise.imageAlt}
+                    width={500}
+                    height={500}
+                    className="rounded-full"
+                    data-ai-hint={content.enterprise.imageHint}
+                  />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-card/50 py-20 px-4 mt-20">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{content.features.title}</h2>
                     <p className="mt-3 text-lg text-muted-foreground">{content.features.subtitle}</p>
-
                 </div>
                 <div className="grid md:grid-cols-3 gap-8">
                     {content.features.items.map((item, index) => (
