@@ -4,6 +4,7 @@
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
 import type { Asset, Transaction, WalletData } from "@/lib/types";
+import mime from 'mime-types';
 
 
 const formSchema = z.object({
@@ -206,4 +207,79 @@ export async function handleFetchData(
       error: "An unexpected error occurred while fetching wallet data.",
     };
   }
+}
+
+type UpdateImagesResult = {
+  success: boolean;
+  error?: string;
+  updatedUrls?: Record<string, string>;
+};
+
+// This is a secure server action to upload images and update the database
+export async function updateLandingPageImages(
+  formData: FormData
+): Promise<UpdateImagesResult> {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return { success: false, error: "Server configuration error." };
+  }
+
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+  const updatedUrls: Record<string, string> = {};
+
+  // Fetch the current content
+  const { data: currentContentData, error: fetchError } = await supabaseAdmin
+    .from("editable_content")
+    .select("content")
+    .eq("id", "landing-page-images")
+    .single();
+
+  if (fetchError) {
+    return { success: false, error: `Database fetch error: ${fetchError.message}` };
+  }
+
+  const newContent = { ...currentContentData.content };
+
+  for (const [id, file] of formData.entries()) {
+    if (file instanceof File) {
+      const filePath = `public/${id}-${Date.now()}`;
+      const contentType = mime.lookup(file.name) || 'application/octet-stream';
+
+      const { error: uploadError } = await supabaseAdmin.storage
+        .from("landing-images")
+        .upload(filePath, file, {
+            contentType,
+            upsert: true,
+        });
+
+      if (uploadError) {
+        console.error("Supabase upload error:", uploadError);
+        return { success: false, error: `Upload error: ${uploadError.message}` };
+      }
+
+      const { data: publicUrlData } = supabaseAdmin.storage
+        .from("landing-images")
+        .getPublicUrl(filePath);
+
+      if (publicUrlData) {
+        newContent[id] = publicUrlData.publicUrl;
+        updatedUrls[id] = publicUrlData.publicUrl;
+      }
+    }
+  }
+
+  const { error: updateError } = await supabaseAdmin
+    .from("editable_content")
+    .update({ content: newContent, updated_at: new Date().toISOString() })
+    .eq("id", "landing-page-images");
+
+  if (updateError) {
+    console.error("Supabase update error:", updateError);
+    return { success: false, error: `Database update error: ${updateError.message}` };
+  }
+
+  return { success: true, updatedUrls };
 }
