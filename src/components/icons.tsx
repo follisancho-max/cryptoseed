@@ -17,6 +17,17 @@ export const Logo = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+export const RoninIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path d="M9.19,7.63v8.82H5.5v2.84h13V4.75H9.19v2.88Zm5.61,4.41H11v4.41h3.8v-4.41Z" />
+  </svg>
+);
+
 
 export const BitcoinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="currentColor" viewBox="0 0 16 16" {...props}><path d="M5.5 13v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.5v1.25c0 .138.112.25.25.25h1a.25.25 0 0 0 .25-.25V13h.084c1.992 0 3.416-1.033 3.416-2.82 0-1.502-1.007-2.323-2.186-2.44v-.088c.97-.242 1.683-.97 1.683-2.19C11.997 3.93 10.847 3 9.082 3H7.5A.5.5 0 0 0 7 3.5v3.69h-.5V3.5a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5zm-1.5-1H4V4h1v8zm2-8V4h.5c1.107 0 1.622.499 1.622 1.258 0 .74-.504 1.218-1.557 1.218H6.5zM7 8.25h1.52c1.478 0 2.135.636 2.135 1.866 0 1.215-.666 1.878-2.135 1.878H7V8.25z"/></svg>

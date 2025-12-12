@@ -14,7 +14,8 @@ import {
   BnbIcon, 
   CardanoIcon,
   PolkadotIcon,
-  ChainlinkIcon
+  ChainlinkIcon,
+  RoninIcon
 } from "@/components/icons";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -152,6 +153,41 @@ export default function LandingPage() {
                   ))}
                 </div>
             </div>
+        </section>
+
+        <section className="py-20 px-4">
+          <div className="max-w-6xl mx-auto rounded-3xl bg-primary text-primary-foreground overflow-hidden">
+            <div className="grid md:grid-cols-2 items-center">
+              <div className="p-8 md:p-12 lg:p-16">
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">{content.testimonial.title}</h2>
+                <div className="flex items-center gap-3 mb-6">
+                  <RoninIcon className="w-8 h-8" />
+                  <span className="text-2xl font-semibold">{content.testimonial.partner}</span>
+                </div>
+                <blockquote className="text-lg text-primary-foreground/80 mb-6 border-l-4 border-primary-foreground/50 pl-6 italic">
+                  {content.testimonial.quote}
+                </blockquote>
+                <div className="mb-8">
+                    <p className="text-4xl font-bold">{content.testimonial.savings.value}</p>
+                    <p className="text-sm uppercase tracking-wider text-primary-foreground/70">{content.testimonial.savings.label}</p>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  <Button variant="outline" size="lg" className="bg-primary text-primary-foreground hover:bg-primary-foreground hover:text-primary border-primary-foreground">{content.testimonial.ctaPrimary}</Button>
+                  <Button variant="link" size="lg" className="text-primary-foreground hover:text-primary-foreground/80">{content.testimonial.ctaSecondary}</Button>
+                </div>
+              </div>
+              <div className="relative h-full min-h-[350px] md:min-h-[500px]">
+                 <Image 
+                    src={content.testimonial.imageUrl}
+                    alt={content.testimonial.imageAlt}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    data-ai-hint={content.testimonial.imageHint}
+                    className="scale-125 translate-x-1/4"
+                 />
+              </div>
+            </div>
+          </div>
         </section>
         
         <section className="bg-card/50 py-20 px-4 mt-20">

@@ -86,6 +86,20 @@
             }
         ]
     },
+    "testimonial": {
+        "title": "Trusted By The Biggest Names in Web3",
+        "partner": "Ronin",
+        "quote": "Compared to building in-house, we avoided ~$4,000/month per chain in infra costs. Game devs benefit from better tools, and users enjoy a smoother, cross-chain experience on Ronin Wallet.",
+        "savings": {
+            "value": "$4K+/Month",
+            "label": "Saved in Infra Costs"
+        },
+        "ctaPrimary": "See How Much You Can Save",
+        "ctaSecondary": "Start for Free",
+        "imageUrl": "https://picsum.photos/seed/testimonial1/800/600",
+        "imageAlt": "Ronin wallet showing portfolio overview and asset list",
+        "imageHint": "crypto portfolio"
+    },
     "features": {
         "title": "Why Choose CryptoSeed?",
         "subtitle": "A secure, simple, and powerful way to interact with blockchain data.",
