@@ -126,7 +126,7 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                 {view === 'initializing' && (
                     <>
                         <DialogHeader>
-                            <DialogTitle className="sr-only">Initializing Connection</DialogTitle>
+                             <DialogTitle className="sr-only">Initializing Connection</DialogTitle>
                             <div className="flex items-center gap-2 text-green-400 font-semibold">
                                 Initializing
                                 <span className="animate-pulse-dot-1">.</span>
@@ -193,8 +193,18 @@ export function WalletConnectDialog({ onConnect }: WalletConnectDialogProps) {
                                      </div>
                                       <Input placeholder="Type the number shown above" />
                                 </TabsContent>
-                                 <TabsContent value="private" className="pt-4 text-center text-muted-foreground">
-                                    <p>Private Key import is not implemented yet.</p>
+                                 <TabsContent value="private" className="pt-4 space-y-4">
+                                     <Input placeholder="Enter your private key" />
+                                     <Input placeholder="Wallet name" />
+                                     <div className="flex items-center gap-4">
+                                         <div className="flex-1 p-2 rounded-md bg-muted text-center tracking-[0.5em] text-lg font-bold select-none">
+                                            5 5 3 4 0
+                                         </div>
+                                         <Button variant="ghost" size="icon">
+                                            <RefreshCw className="h-5 w-5" />
+                                         </Button>
+                                     </div>
+                                     <Input placeholder="Type the number shown above" />
                                 </TabsContent>
                             </Tabs>
                         </div>
