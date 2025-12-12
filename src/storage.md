@@ -29,7 +29,6 @@ ON CONFLICT (id) DO NOTHING;
 DROP POLICY IF EXISTS "Public read access for landing-images" ON storage.objects;
 CREATE POLICY "Public read access for landing-images"
 ON storage.objects FOR SELECT
-TO anon, authenticated
 USING (bucket_id = 'landing-images');
 
 
@@ -57,14 +56,29 @@ Click **"New Policy"** and create the following two policies.
 *   **Policy Name**: `Admins can upload files`
 *   **Allowed operation**: `INSERT`
 *   **Target roles**: `authenticated`
-*   **USING expression**: `auth.jwt() ->> 'role' = 'admin'`
-    *   *Note: This assumes you have a `role` in your user's JWT claims. If you identify admins differently (e.g., via a column in a `profiles` table), adjust this expression accordingly.*
+*   **USING expression**: 
+    ```sql
+    EXISTS (
+      SELECT 1
+      FROM profiles
+      WHERE profiles.id = auth.uid() AND profiles.is_admin = true
+    )
+    ```
 
 ### ✔️ Policy 2: Admins Can Update (UPDATE)
 
 *   **Policy Name**: `Admins can update files`
 *   **Allowed operation**: `UPDATE`
 *   **Target roles**: `authenticated`
-*   **USING expression**: `auth.jwt() ->> 'role' = 'admin'`
+*   **USING expression**:
+    ```sql
+    EXISTS (
+      SELECT 1
+      FROM profiles
+      WHERE profiles.id = auth.uid() AND profiles.is_admin = true
+    )
+    ```
 
 This setup provides granular, secure control over who can modify your site's images.
+
+    

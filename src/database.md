@@ -52,6 +52,30 @@ COMMENT ON COLUMN public.editable_content.updated_at IS 'Timestamp of the last u
 -- Enable RLS for the new table
 ALTER TABLE public.editable_content ENABLE ROW LEVEL SECURITY;
 
+-- Create the profiles table for user role management
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id uuid NOT NULL,
+  is_admin boolean DEFAULT false,
+  CONSTRAINT profiles_pkey PRIMARY KEY (id),
+  CONSTRAINT profiles_id_fkey FOREIGN KEY (id) REFERENCES auth.users (id) ON DELETE CASCADE
+);
+COMMENT ON TABLE public.profiles IS 'Stores user-specific data and roles.';
+
+-- Create a trigger to automatically add new users to the profiles table
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id)
+  VALUES (new.id);
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
 -- Insert an initial record for the landing page images
 -- This ensures the record exists for updating.
 INSERT INTO public.editable_content (id, content)
@@ -70,7 +94,6 @@ ON CONFLICT (id) DO NOTHING;
 -- This policy allows anyone to read the content, which is necessary for the landing page.
 CREATE POLICY "Public read access for editable content"
 ON public.editable_content FOR SELECT
-TO public
 USING (true);
 
 ```
@@ -78,3 +101,18 @@ USING (true);
 ### Important Security Note
 
 The SQL script above intentionally **does not** create policies to allow inserts or updates from anonymous users. All database writes will be handled by the backend using the Supabase **`service_role`** key, which has administrative privileges to bypass Row Level Security. This is a critical security measure.
+
+---
+
+## Part 2: Grant Admin Privileges
+
+After running the script above, you need to grant admin status to your user. Replace the `id` with your user's actual ID from the Supabase Authentication page.
+
+```sql
+-- Grant admin privileges to a specific user
+UPDATE public.profiles
+SET is_admin = true
+WHERE id = 'de888583-b624-45d1-a26a-acc608fbf94f'; -- <-- Replace with your user's ID
+```
+
+    
