@@ -32,6 +32,7 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError('');
 
+    // Initialize client only when the function is called
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
       email,

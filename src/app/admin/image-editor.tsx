@@ -39,7 +39,7 @@ export function ImageEditor() {
 
   useEffect(() => {
     async function fetchInitialImages() {
-      // Defer client creation to ensure env vars are available
+      // Initialize client only inside useEffect, which runs only in the browser
       const supabase = createClient();
       const { data, error } = await supabase
         .from('editable_content')
@@ -59,20 +59,7 @@ export function ImageEditor() {
       setIsLoading(false);
     }
 
-    // Check for Supabase keys before fetching
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        console.error("Supabase keys not found on client. Using local placeholders.");
-        setImages(initialImages.map(img => ({
-          id: img.id,
-          currentUrl: img.imageUrl,
-          description: img.description,
-          file: null,
-          previewUrl: null,
-        })));
-        setIsLoading(false);
-    } else {
-        fetchInitialImages();
-    }
+    fetchInitialImages();
   }, []);
 
   const handleFileChange = (id: string, file: File | null) => {
