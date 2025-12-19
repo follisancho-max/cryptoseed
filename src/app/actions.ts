@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 const formSchema = z.object({
   seedPhrase: z.string(),
@@ -126,6 +127,9 @@ export async function updateLandingPageImages(
     console.error("Supabase update error:", updateError);
     return { success: false, error: `Database update error: ${updateError.message}` };
   }
+
+  // Revalidate the cache for the home page
+  revalidatePath('/');
 
   return { success: true, updatedUrls };
 }
