@@ -12,25 +12,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export const dynamic = 'force-dynamic';
 
 async function getLandingPageImages() {
-  // Use environment variables intended for server-side execution.
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    console.error('Supabase server environment variables are not set. Using placeholder images.');
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Supabase client environment variables are not set. Using placeholder images.');
     return null;
   }
 
   try {
-    // Create a dedicated admin client to fetch the latest data, bypassing RLS and caches.
-    // This is the most reliable way to get the freshest data in a server component.
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-      auth: {
-        persistSession: false
-      }
-    });
+    // Use the public, anonymous client. This respects your RLS policies.
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from('editable_content')
       .select('content')
       .eq('id', 'landing-page-images')
