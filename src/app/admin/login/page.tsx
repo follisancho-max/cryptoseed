@@ -32,7 +32,7 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError('');
 
-    // Initialize client only when the function is called
+    // Initialize client only when the function is called in the browser
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
         title: 'Login Successful',
         description: 'Redirecting to the admin panel...',
       });
-      // Force a router refresh to re-run the middleware
+      // Force a router refresh to re-run the middleware and redirect
       router.refresh();
     }
   };
