@@ -11,15 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export const dynamic = 'force-dynamic';
 
 async function getLandingPageImages() {
-  const supabaseUrl = process.env.SUPABASE_URL;
+  // Use environment variables meant for server-side execution.
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
-    console.error('Supabase environment variables are not set. Using placeholder images.');
+    console.error('Supabase server environment variables are not set. Using placeholder images.');
     return null;
   }
 
   try {
+    // Create a dedicated admin client to fetch the latest data, bypassing RLS and caches.
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
     const { data, error } = await supabaseAdmin
       .from('editable_content')
