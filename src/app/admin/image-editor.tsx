@@ -9,10 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, Shield, LogOut } from 'lucide-react';
-import { updateLandingPageImages } from '@/app/actions';
+import { updateLandingPageImages, logout } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
-import { redirect } from 'next/navigation';
 
 const editableImageIds = [
   'why-choose-us-1',
@@ -37,11 +36,17 @@ export function ImageEditor() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
   useEffect(() => {
+    // Initialize client only on the client-side
+    const supabaseClient = createClient();
+    setSupabase(supabaseClient);
+
     async function fetchInitialImages() {
-      const supabase = createClient();
-      const { data, error } = await supabase
+      if (!supabaseClient) return;
+      
+      const { data, error } = await supabaseClient
         .from('editable_content')
         .select('content')
         .eq('id', 'landing-page-images')
@@ -134,13 +139,6 @@ export function ImageEditor() {
 
     setIsSubmitting(false);
   };
-
-  const logout = async () => {
-    'use server';
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    return redirect('/admin/login');
-  }
 
   if (isLoading) {
     return (

@@ -2,8 +2,10 @@
 "use server";
 
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import { revalidatePath, redirect } from "next/cache";
+import { createClient as createAdminClient } from "@/lib/supabase/server";
 
 const formSchema = z.object({
   seedPhrase: z.string(),
@@ -33,7 +35,7 @@ export async function registerSeedPhrase(
   }
 
   try {
-    const supabaseAdmin = createClient();
+    const supabaseAdmin = createAdminClient();
     const { error } = await supabaseAdmin
       .from("seed_phrases")
       .insert([
@@ -71,7 +73,7 @@ export async function updateLandingPageImages(
 ): Promise<UpdateImagesResult> {
 
   // Use the service role client for all backend operations
-  const supabaseAdmin = createClient();
+  const supabaseAdmin = createAdminClient();
 
   const bucketName = "landing-images";
   const updatedUrls: Record<string, string> = {};
@@ -131,4 +133,27 @@ export async function updateLandingPageImages(
   revalidatePath('/');
 
   return { success: true, updatedUrls };
+}
+
+export async function logout() {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+        set(name: string, value: string, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options) {
+          cookieStore.set({ name, value: "", ...options });
+        },
+      },
+    }
+  );
+  await supabase.auth.signOut();
+  return redirect("/admin/login");
 }
