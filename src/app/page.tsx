@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import { Logo } from '@/components/icons';
@@ -12,17 +12,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export const dynamic = 'force-dynamic';
 
 async function getLandingPageImages() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Supabase client environment variables are not set. Using placeholder images.');
-    return null;
-  }
-
   try {
-    // Use the public, anonymous client. This respects your RLS policies.
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Use the admin client to fetch data on the server.
+    // This bypasses RLS and ensures we get the data.
+    const supabase = createClient();
 
     const { data, error } = await supabase
       .from('editable_content')
