@@ -4,14 +4,15 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield, LogOut } from 'lucide-react';
 import { updateLandingPageImages } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase/client';
+import { redirect } from 'next/navigation';
 
 const editableImageIds = [
   'why-choose-us-1',
@@ -39,7 +40,6 @@ export function ImageEditor() {
 
   useEffect(() => {
     async function fetchInitialImages() {
-      // Initialize client only inside useEffect, which runs only in the browser
       const supabase = createClient();
       const { data, error } = await supabase
         .from('editable_content')
@@ -106,7 +106,6 @@ export function ImageEditor() {
         title: "Success",
         description: "Images have been updated successfully.",
       });
-      // Update current URLs and reset file inputs
       setImages(currentImages =>
         currentImages.map(img => {
           if (result.updatedUrls && result.updatedUrls[img.id]) {
@@ -120,7 +119,6 @@ export function ImageEditor() {
           return img;
         })
       );
-      // Reset file input fields
       Object.values(fileInputRefs.current).forEach(input => {
         if (input) {
           input.value = '';
@@ -137,6 +135,13 @@ export function ImageEditor() {
     setIsSubmitting(false);
   };
 
+  const logout = async () => {
+    'use server';
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    return redirect('/admin/login');
+  }
+
   if (isLoading) {
     return (
       <Card className="border-primary/10">
@@ -151,9 +156,23 @@ export function ImageEditor() {
   }
 
   return (
-    <Card className="border-primary/10">
-      <CardHeader>
-        <CardTitle>Edit Landing Page Images</CardTitle>
+    <Card className="w-full bg-card/50 border-primary/20">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <Shield className="h-7 w-7 text-primary" />
+            Admin Panel
+          </CardTitle>
+          <CardDescription>
+            Manage site content and settings from here.
+          </CardDescription>
+        </div>
+          <form action={logout}>
+          <Button variant="outline" size="sm">
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
+        </form>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
