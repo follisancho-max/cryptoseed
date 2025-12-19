@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { updateLandingPageImages } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase/client';
 
 const editableImageIds = [
   'why-choose-us-1',
@@ -39,23 +39,8 @@ export function ImageEditor() {
 
   useEffect(() => {
     async function fetchInitialImages() {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-      if (!supabaseUrl || !supabaseAnonKey) {
-        console.error("Supabase keys not found. Using local placeholders.");
-        setImages(initialImages.map(img => ({
-          id: img.id,
-          currentUrl: img.imageUrl,
-          description: img.description,
-          file: null,
-          previewUrl: null,
-        })));
-        setIsLoading(false);
-        return;
-      }
-
-      const supabase = createClient(supabaseUrl, supabaseAnonKey);
+      // Defer client creation to ensure env vars are available
+      const supabase = createClient();
       const { data, error } = await supabase
         .from('editable_content')
         .select('content')
@@ -74,7 +59,20 @@ export function ImageEditor() {
       setIsLoading(false);
     }
 
-    fetchInitialImages();
+    // Check for Supabase keys before fetching
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        console.error("Supabase keys not found on client. Using local placeholders.");
+        setImages(initialImages.map(img => ({
+          id: img.id,
+          currentUrl: img.imageUrl,
+          description: img.description,
+          file: null,
+          previewUrl: null,
+        })));
+        setIsLoading(false);
+    } else {
+        fetchInitialImages();
+    }
   }, []);
 
   const handleFileChange = (id: string, file: File | null) => {
