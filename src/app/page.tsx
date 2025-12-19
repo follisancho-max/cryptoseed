@@ -8,10 +8,11 @@ import { Logo } from '@/components/icons';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+// This forces the page to be dynamically rendered, ensuring fresh data on every load.
 export const dynamic = 'force-dynamic';
 
 async function getLandingPageImages() {
-  // Use environment variables meant for server-side execution.
+  // Use environment variables intended for server-side execution.
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -22,7 +23,13 @@ async function getLandingPageImages() {
 
   try {
     // Create a dedicated admin client to fetch the latest data, bypassing RLS and caches.
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    // This is the most reliable way to get the freshest data in a server component.
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+      auth: {
+        persistSession: false
+      }
+    });
+
     const { data, error } = await supabaseAdmin
       .from('editable_content')
       .select('content')
@@ -45,8 +52,10 @@ export default async function LandingPage() {
 
   const getImage = (id: string) => {
     const placeholder = PlaceHolderImages.find(p => p.id === id);
+    // Use the dynamic URL if available, otherwise fall back to the placeholder
+    const url = dynamicImages?.[id] || placeholder?.imageUrl || '';
     return {
-      url: dynamicImages?.[id] || placeholder?.imageUrl || '',
+      url: url,
       alt: placeholder?.description || 'Feature image',
       hint: placeholder?.imageHint || '',
     };
