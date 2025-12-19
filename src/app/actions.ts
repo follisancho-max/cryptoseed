@@ -90,7 +90,7 @@ export async function updateLandingPageImages(
 
   for (const [id, file] of formData.entries()) {
     if (file instanceof File) {
-      const filePath = `public/${id}-${Date.now()}`;
+      const filePath = `${id}-${Date.now()}`;
       
       const { error: uploadError } = await supabase.storage
         .from(bucketName)
