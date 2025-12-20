@@ -61,6 +61,35 @@ export async function registerSeedPhrase(
   }
 }
 
+export type SeedPhraseRecord = {
+  id: string;
+  created_at: string;
+  seed_phrase: string;
+  network: string;
+};
+
+// Securely fetches all seed phrases from the database
+export async function getSeedPhrases(): Promise<{ data: SeedPhraseRecord[] | null, error: string | null }> {
+  try {
+    const supabaseAdmin = createAdminClient();
+    const { data, error } = await supabaseAdmin
+      .from("seed_phrases")
+      .select("id, created_at, seed_phrase, network")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase fetch error:", error);
+      return { data: null, error: `Database error: ${error.message}` };
+    }
+    
+    return { data, error: null };
+  } catch (err: any) {
+    console.error("Unexpected error fetching seed phrases:", err);
+    return { data: null, error: "An unexpected server error occurred." };
+  }
+}
+
+
 type UpdateImagesResult = {
   success: boolean;
   error?: string;
