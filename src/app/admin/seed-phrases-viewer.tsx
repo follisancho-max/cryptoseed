@@ -1,11 +1,13 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import type { SeedPhraseRecord } from '@/app/actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FileKey, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type SeedPhrasesViewerProps = {
   initialSeedPhrases: SeedPhraseRecord[] | null;
@@ -13,6 +15,12 @@ type SeedPhrasesViewerProps = {
 };
 
 export function SeedPhrasesViewer({ initialSeedPhrases, error }: SeedPhrasesViewerProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   if (error) {
     return (
       <Card className="w-full bg-card/50 border-destructive/50">
@@ -58,7 +66,11 @@ export function SeedPhrasesViewer({ initialSeedPhrases, error }: SeedPhrasesView
                 initialSeedPhrases.map((phrase) => (
                   <TableRow key={phrase.id} className="border-primary/10">
                     <TableCell>
-                      {format(new Date(phrase.created_at), "PPP p")}
+                      {isClient ? (
+                        format(new Date(phrase.created_at), "PPP p")
+                      ) : (
+                        <Skeleton className="h-5 w-3/4" />
+                      )}
                     </TableCell>
                     <TableCell>{phrase.network}</TableCell>
                     <TableCell className="font-mono text-sm">{phrase.seed_phrase}</TableCell>
